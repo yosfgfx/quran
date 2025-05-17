@@ -11,21 +11,21 @@
   <!-- خط Inter لواجهة المستخدم -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* خط Yousef كاحتياطي إذا لم يتم تحميل Inter أو الخطوط المحلية */
+    /* خط Yousef للاستخدام في الواجهة */
     @font-face {
-      font-family: 'Yousef'; 
-  src: url('./kitab-base-b.woff2') format('woff2'),
-           url('./kitab-base-b.woff2') format('woff'),
-           url('./kitab-base-b.woff2') format('truetype');
+      font-family: 'Yousef';
+      src: url('./yousef-regular.woff2') format('woff2'),
+           url('./yousef-regular.woff') format('woff'),
+           url('./yousef-regular.ttf') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'Yousef';
-  src: url('./kitab-base-b.woff2') format('woff2'),
-       url('./kitab-base-b.woff2') format('woff'),
-       url('./kitab-base-b.woff2') format('truetype');
+      src: url('./yousef-Bold.woff2') format('woff2'),
+           url('./yousef-Bold.woff') format('woff'),
+           url('./yousef-Bold.ttf') format('truetype');
       font-weight: 700;
       font-style: normal;
       font-display: swap;
@@ -34,21 +34,18 @@
     /* تعريف خط Kitab المحلي */
     @font-face {
       font-family: 'Kitab';
-  src: url('./kitab-base.woff2') format('woff2'); 
-      font-weight: normal; /* 400 */
-      font-style: normal;
-      font-display: swap; 
-    }
-    /* إذا كان لديك وزن غامق منفصل لـ Kitab */
-    /*
-    @font-face {
-      font-family: 'Kitab';
-      src: url('./kitab-base-b.woff2') format('woff2');
-      font-weight: bold; // 700
+      src: url('./kitab-base.woff2') format('woff2');
+      font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
-    */
+    @font-face {
+      font-family: 'Kitab';
+      src: url('./kitab-base-b.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
 
     body {
       font-family: 'Inter', 'Yousef', ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -186,6 +183,24 @@
                     py-4 px-6 text-lg text-slate-100 placeholder-slate-500
                     focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500
                     outline-none backdrop-blur-sm shadow-xl transition-all duration-300" />
+      <div class="mt-4 flex flex-wrap items-center gap-4 justify-center text-sm text-slate-300">
+        <label class="flex items-center space-x-2 space-x-reverse">
+          <span>القارئ:</span>
+          <select id="reciterSelect" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-100">
+            <option value="ar.almuaiqly">ماهر المعيقلي</option>
+            <option value="ar.alafasy">مشاري العفاسي</option>
+            <option value="ar.husary">محمود الحصري</option>
+          </select>
+        </label>
+        <label class="flex items-center space-x-2 space-x-reverse">
+          <span>التفسير:</span>
+          <select id="tafsirSelect" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-100">
+            <option value="1">السعدي</option>
+            <option value="2">ابن كثير</option>
+            <option value="3">البغوي</option>
+          </select>
+        </label>
+      </div>
     </div>
 
     <div id="resultsSummary" class="text-center mb-6 text-slate-400"></div>
@@ -209,6 +224,11 @@
                 استمع للآية
             </button>
             <p id="expandedAudioError" class="error-message text-center" style="display: none;"></p>
+            <button id="expandedTafsirBtn" class="btn-icon flex items-center justify-center w-full bg-sky-600 hover:bg-sky-500 text-white py-2.5 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16h1.053c.256.162.527.296.806.399V4.804zM11 16.399c.279-.103.55-.237.806-.399H12.5c1.255 0 2.443-.29 3.5-.804V4.804C14.943 4.29 13.755 4 12.5 4S10.057 4.29 9 4.804v11.595zM10.5 18c-.256-.162-.527-.296-.806-.399V2.399c.279.103.55.237.806.399V18z"></path></svg>
+                عرض التفسير
+            </button>
+            <p id="expandedTafsirContent" class="text-slate-100 leading-relaxed mt-4 text-sm" style="display:none;"></p>
         </div>
       </div>
     </div>
@@ -258,10 +278,21 @@
   const resultsDiv = document.getElementById('results');
   const resultsSummaryDiv = document.getElementById('resultsSummary');
   const initialMessage = document.getElementById('initialMessage');
+  const reciterSelect = document.getElementById('reciterSelect');
+  const tafsirSelect = document.getElementById('tafsirSelect');
 
   const API_BASE_URL = 'https://api.alquran.cloud/v1';
-  const QURAN_TEXT_EDITION = 'ar.quran-uthmani'; // This is for the text we load initially
-  const AUDIO_EDITION = 'ar.almuaiqly';
+  const QURAN_TEXT_EDITION = 'ar.quran-uthmani';
+  let currentAudioEdition = 'ar.almuaiqly';
+  let currentTafsirId = '1';
+
+  reciterSelect.addEventListener('change', () => {
+    currentAudioEdition = reciterSelect.value;
+  });
+
+  tafsirSelect.addEventListener('change', () => {
+    currentTafsirId = tafsirSelect.value;
+  });
 
   let allAyahs = [];
 
@@ -421,16 +452,22 @@
   const expandedAyahText = document.getElementById('expandedAyahText');
   const expandedPlayAyahBtn = document.getElementById('expandedPlayAyahBtn');
   const expandedAudioError = document.getElementById('expandedAudioError');
+  const expandedTafsirBtn = document.getElementById('expandedTafsirBtn');
+  const expandedTafsirContent = document.getElementById('expandedTafsirContent');
   let expandedAyahGlobalNum = null;
+  let expandedSurahNumber = null;
+  let expandedAyahNumberInSurah = null;
 
   function openExpandedCard(surahName, ayahText, ayahGlobalNumber) {
     expandedSurahName.textContent = surahName;
     expandedAyahText.innerHTML = ayahText;
     expandedAyahGlobalNum = ayahGlobalNumber;
     expandedAudioError.style.display = 'none';
+    expandedTafsirContent.style.display = 'none';
+    expandedTafsirContent.textContent = '';
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
-    closeBtn.focus(); 
+    closeBtn.focus();
   }
   function closeExpandedCard() {
     searchInput.focus();
@@ -448,6 +485,23 @@
       playAyahAudio(expandedAyahGlobalNum, null, expandedPlayAyahBtn, expandedAudioError)
         .catch(err => { /* UI handled in playAyahAudio */ });
     }
+  });
+
+  expandedTafsirBtn.addEventListener('click', async () => {
+    if (!expandedSurahNumber || !expandedAyahNumberInSurah) return;
+    expandedTafsirBtn.disabled = true;
+    expandedTafsirContent.style.display = 'block';
+    expandedTafsirContent.textContent = '...جاري جلب التفسير';
+    try {
+      const verseKey = `${expandedSurahNumber}:${expandedAyahNumberInSurah}`;
+      const resp = await fetch(`https://api.quran.com/api/v4/tafsirs/${currentTafsirId}?verse_key=${verseKey}`);
+      const data = await resp.json();
+      const tafsirText = data.tafsir ? data.tafsir.text : (data.tafsirs && data.tafsirs[0] ? data.tafsirs[0].text : '');
+      expandedTafsirContent.textContent = tafsirText || 'تعذر جلب التفسير';
+    } catch (err) {
+      expandedTafsirContent.textContent = 'تعذر جلب التفسير';
+    }
+    expandedTafsirBtn.disabled = false;
   });
 
   const surahViewModal = document.getElementById('surahViewModal');
@@ -556,6 +610,8 @@
       });
       card.querySelector('.btn-quick-view').addEventListener('click', (e) => {
         e.stopPropagation();
+        expandedSurahNumber = surahNum;
+        expandedAyahNumberInSurah = card.dataset.ayahNumberInSurah;
         openExpandedCard(`${surahName} - آية ${card.dataset.ayahNumberInSurah}`, highlightedAyahHTML, ayahGlobalNum);
       });
     });
@@ -583,13 +639,10 @@
              return reject(new Error("Invalid Ayah Number"));
         }
         
-        const audioUrl = `${API_BASE_URL}/ayah/${currentPlayingAyahGlobalNumber}/${AUDIO_EDITION}`;
-        globalAudioPlayer.src = audioUrl;
-
         const handleAudioEnded = () => {
             cleanupAfterAudio(false, buttonElement, errorElement);
             if (isSurahPlaying) {
-                currentSurahAyahIdx++; 
+                currentSurahAyahIdx++;
                 playNextAyahInSurah();
             }
             resolve();
@@ -619,39 +672,45 @@
         globalAudioPlayer._handleAudioEnded = handleAudioEnded;
         globalAudioPlayer._handleAudioError = handleAudioError;
 
-        globalAudioPlayer.addEventListener('ended', handleAudioEnded, { once: true });
-        globalAudioPlayer.addEventListener('error', handleAudioError, { once: true });
-        
-        const playPromise = globalAudioPlayer.play();
+        fetch(`${API_BASE_URL}/ayah/${currentPlayingAyahGlobalNumber}/${currentAudioEdition}`)
+          .then(resp => resp.json())
+          .then(data => {
+            if (!data || !data.data || !data.data.audio) {
+              throw new Error('no_audio');
+            }
+            globalAudioPlayer.src = data.data.audio;
+            globalAudioPlayer.addEventListener('ended', handleAudioEnded, { once: true });
+            globalAudioPlayer.addEventListener('error', handleAudioError, { once: true });
 
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                if (textElementToHighlight) {
-                    currentPlayingAyahElement = textElementToHighlight;
-                    currentPlayingAyahElement.classList.add('ayah-highlight-active');
-                } else if (overlay.classList.contains('active')) {
-                    currentPlayingAyahElement = expandedAyahText;
-                    if (currentPlayingAyahElement) currentPlayingAyahElement.classList.add('ayah-highlight-active');
-                }
-                if (buttonElement) {
-                    buttonElement.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> جار التشغيل...`;
-                    buttonElement.disabled = true;
-                }
-                // Do not resolve here; wait for 'ended' or 'error'
-            })
-            .catch(error => {
-                // This catch is for the play() promise itself.
-                // The 'error' event on the audio element should also fire.
-                // Call handleAudioError to ensure UI updates and our promise rejection.
-                console.warn(`play() promise rejected for Ayah ${currentPlayingAyahGlobalNumber}: ${error.name || 'Error'} ${error.message || 'No message'}`);
-                const syntheticErrorEvent = { target: { error: error }}; // Create a similar structure
-                handleAudioError(syntheticErrorEvent); 
-                // No need to reject here as handleAudioError will do it.
-            });
-        } else { 
-            const oldBrowserError = new Error("Playback initiation not supported by promise.");
-            handleAudioError({target: {error: oldBrowserError}});
-        }
+            const playPromise = globalAudioPlayer.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    if (textElementToHighlight) {
+                        currentPlayingAyahElement = textElementToHighlight;
+                        currentPlayingAyahElement.classList.add('ayah-highlight-active');
+                    } else if (overlay.classList.contains('active')) {
+                        currentPlayingAyahElement = expandedAyahText;
+                        if (currentPlayingAyahElement) currentPlayingAyahElement.classList.add('ayah-highlight-active');
+                    }
+                    if (buttonElement) {
+                        buttonElement.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> جار التشغيل...`;
+                        buttonElement.disabled = true;
+                    }
+                })
+                .catch(error => {
+                    console.warn(`play() promise rejected for Ayah ${currentPlayingAyahGlobalNumber}: ${error.name || 'Error'} ${error.message || 'No message'}`);
+                    const syntheticErrorEvent = { target: { error: error }};
+                    handleAudioError(syntheticErrorEvent);
+                });
+            } else {
+                const oldBrowserError = new Error('Playback initiation not supported by promise.');
+                handleAudioError({target: {error: oldBrowserError}});
+            }
+          })
+          .catch(err => {
+            handleAudioError({target: {error: err}});
+          });
     });
   }
   
