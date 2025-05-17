@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>بحث مباشر في القرآن الكريم</title>
+  <title>بحث متقدم في القرآن الكريم</title>
+  <link rel="icon" href="data:,">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'Yousef';
@@ -24,232 +28,775 @@
       font-style: normal;
       font-display: swap;
     }
+
     body {
-      font-family: 'Yousef', sans-serif;
-      font-weight: 400;
+      font-family: 'Inter', 'Yousef', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     h1, h2, h3, h4, h5, h6 {
-      font-family: 'Yousef', sans-serif;
+      font-family: 'Inter', 'Yousef', sans-serif;
       font-weight: 700;
     }
+    .font-quran {
+      font-family: 'Amiri', 'Yousef', serif;
+      font-size: 1.65rem;
+      line-height: 2.8;
+    }
+    .font-quran-sm {
+        font-family: 'Amiri', 'Yousef', serif;
+        font-size: 1.25rem;
+        line-height: 2.5;
+    }
+
     .overlay {
       opacity: 0;
       pointer-events: none;
-      -webkit-backdrop-filter: blur(4px);
-      backdrop-filter: blur(4px);
+      transition: opacity 0.3s ease-in-out;
     }
     .overlay.active {
       opacity: 1;
       pointer-events: auto;
     }
-    @supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
-      .overlay {
-        background-color: rgba(0, 0, 0, 0.5);
-      }
-    }
-    .result {
-      background: rgba(255, 255, 255, 0.6);
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
-      border-radius: 1rem;
-      padding: 1rem 1.25rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    @supports not ((-webkit-backdrop-filter: blur(8px)) or (backdrop-filter: blur(8px))) {
-      .result {
-        background: rgba(255, 255, 255, 0.95);
-      }
-    }
-    .result:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
+
     .expanded-card {
-      background: rgba(255, 255, 255, 0.8);
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-height: 80vh;
+      background: rgba(30, 41, 59, 0.85);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      color: #cbd5e1;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3), 0 20px 40px -20px rgba(0,0,0,0.5);
+      max-height: 85vh;
       overflow-y: auto;
     }
-    @supports not ((-webkit-backdrop-filter: blur(12px)) or (backdrop-filter: blur(12px))) {
-      .expanded-card {
-        background: rgba(255, 255, 255, 0.98);
-      }
-    }
     .close-btn {
-      position: absolute;
-      top: .5rem;
-      left: .5rem;
-      background: transparent;
-      border: none;
-      font-size: 1.75rem;
-      font-weight: 700;
-      cursor: pointer;
+      color: #94a3b8;
+      transition: color 0.2s ease;
+    }
+    .close-btn:hover {
+      color: #f59e0b;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(51, 65, 85, 0.3);
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    mark {
+      background-color: rgba(251, 191, 36, 0.3);
+      color: #fde68a;
+      padding: 0.1em 0.25em;
+      border-radius: 4px;
+    }
+    .ayah-highlight-active {
+      background-color: rgba(251, 191, 36, 0.2);
+      transition: background-color 0.3s ease;
+    }
+    .btn-icon svg {
+        width: 1.25em;
+        height: 1.25em;
+        margin-left: 0.5em;
+    }
+    [dir="rtl"] .btn-icon svg {
+        margin-left: 0;
+        margin-right: 0.5em;
+    }
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #FFF;
+      border-bottom-color: #FFC107;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+    @keyframes rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-message {
+        color: #f87171; /* red-400 */
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
     }
   </style>
 </head>
-<body class="bg-gradient-to-b from-zinc-50 via-zinc-100 to-zinc-200 text-zinc-800 min-h-screen p-6 antialiased">
-  <div class="max-w-3xl mx-auto">
-    <h1 class="text-3xl mb-6 text-center">بحث مباشر في القرآن الكريم</h1>
-    <input type="text" id="searchInput" placeholder="اكتب كلمة أو حرف للبحث..." autocomplete="off" class="w-full max-w-xl mx-auto block mb-8 rounded-md border border-zinc-300 bg-white/80 py-3 px-6 text-lg placeholder-zinc-500 focus:bg-white focus:ring-2 focus:ring-zinc-400 focus:outline-none backdrop-blur-md shadow" />
-    <div id="results" class="grid gap-6"></div>
-  </div>
+<body class="bg-slate-900 text-slate-300 min-h-screen p-4 sm:p-6 antialiased custom-scrollbar">
+  <div class="max-w-4xl mx-auto">
+    <header class="my-8 text-center">
+      <h1 class="text-4xl sm:text-5xl font-bold text-amber-400 tracking-tight">نور البيان</h1>
+      <p class="mt-2 text-lg text-slate-400">بحث في آيات القرآن الكريم</p>
+    </header>
 
-  <div id="overlay" class="overlay fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity" aria-hidden="true">
-    <div id="expandedCard" class="expanded-card relative w-[90%] max-w-xl" role="dialog" aria-modal="true">
-      <button id="closeBtn" class="close-btn" aria-label="إغلاق">&times;</button>
-      <h2 id="expandedSurahName" class="surah-name mb-4 text-xl font-bold"></h2>
-      <p id="expandedAyahText" class="ayah-text text-lg leading-relaxed"></p>
+    <div class="mb-8 sticky top-4 z-40">
+      <input type="text" id="searchInput" placeholder="ابحث عن كلمة أو جزء من آية..." autocomplete="off"
+             class="w-full max-w-2xl mx-auto block rounded-lg border-2 border-slate-700 bg-slate-800/80
+                    py-4 px-6 text-lg text-slate-100 placeholder-slate-500
+                    focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500
+                    outline-none backdrop-blur-sm shadow-xl transition-all duration-300" />
+    </div>
+
+    <div id="resultsSummary" class="text-center mb-6 text-slate-400"></div>
+    <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <p id="initialMessage" class="col-span-full text-center text-slate-500 py-10">
+        ...جار تحميل كامل القرآن، انتظر قليلاً
+      </p>
     </div>
   </div>
+
+  <!-- Quick Ayah View Modal -->
+  <div id="overlay" class="overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4" aria-hidden="true" tabindex="-1">
+    <div id="expandedCard" class="expanded-card relative w-full max-w-xl" role="dialog" aria-modal="true" aria-labelledby="expandedSurahName" aria-describedby="expandedAyahText">
+      <button id="closeBtn" class="close-btn absolute top-4 left-4 p-2" aria-label="إغلاق">×</button>
+      <div class="p-6 sm:p-8">
+        <h2 id="expandedSurahName" class="text-xl sm:text-2xl font-bold text-amber-400 mb-3"></h2>
+        <p id="expandedAyahText" class="font-quran text-slate-100 leading-relaxed mb-4"></p>
+        <div class="flex flex-col items-center space-y-2">
+            <button id="expandedPlayAyahBtn" class="btn-icon flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>
+                استمع للآية
+            </button>
+            <p id="expandedAudioError" class="error-message text-center" style="display: none;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Surah View Modal -->
+  <div id="surahViewModal" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-300" aria-hidden="true">
+    <div class="bg-slate-800 w-full max-w-4xl h-[95vh] sm:h-[90vh] rounded-xl shadow-2xl flex flex-col relative border border-slate-700/70">
+      <div class="p-4 sm:p-5 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+        <h2 id="surahViewTitle" class="text-xl sm:text-2xl font-bold text-amber-400"></h2>
+        <button id="closeSurahViewBtn" class="text-slate-400 hover:text-amber-400 text-3xl sm:text-4xl p-1">×</button>
+      </div>
+      <div id="surahViewContentWrapper" class="flex-grow overflow-hidden relative">
+        <div id="surahViewContent" class="p-4 sm:p-6 space-y-2 overflow-y-auto h-full custom-scrollbar">
+          <!-- Ayahs will be loaded here -->
+        </div>
+      </div>
+      <div id="surahAudioPlayerControls" class="p-3 sm:p-4 border-t border-slate-700 flex-shrink-0">
+        <div class="flex items-center space-x-3 space-x-reverse">
+          <button id="playPauseSurahBtn" class="text-amber-400 hover:text-amber-300 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-slate-800">
+            <svg id="playIconSurah" class="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+            <svg id="pauseIconSurah" class="w-7 h-7 sm:w-8 sm:h-8 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+          </button>
+          <div class="flex-grow bg-slate-700 rounded-full h-2.5 sm:h-3 relative">
+            <div id="surahProgressBar" class="bg-amber-500 h-full rounded-full transition-all duration-100" style="width: 0%"></div>
+            <input type="range" id="surahSeekSlider" value="0" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+          </div>
+        </div>
+        <div id="currentPlayingAyahInfo" class="text-xs sm:text-sm text-slate-400 mt-2 text-center"></div>
+      </div>
+    </div>
+  </div>
+
+<div id="loadingSpinner" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm" style="display: none;">
+  <div class="loader"></div>
+</div>
+
+<audio id="globalAudioPlayer" preload="metadata"></audio>
 
 <script>
   const searchInput = document.getElementById('searchInput');
   const resultsDiv = document.getElementById('results');
-  let allAyahs = []; // تخزين كل الآيات بعد التحميل
+  const resultsSummaryDiv = document.getElementById('resultsSummary');
+  const initialMessage = document.getElementById('initialMessage');
 
-  // تحميل كامل القرآن مرة واحدة عند فتح الصفحة
-  async function loadQuran() {
+  const API_BASE_URL = 'https://api.alquran.cloud/v1';
+  const QURAN_TEXT_EDITION = 'ar.quran-uthmani';
+  const AUDIO_EDITION = 'ar.almuaiqly';
+
+  let allAyahs = [];
+
+  const loadingSpinner = document.getElementById('loadingSpinner');
+  const showLoading = () => loadingSpinner.style.display = 'flex';
+  const hideLoading = () => loadingSpinner.style.display = 'none';
+
+  const globalAudioPlayer = document.getElementById('globalAudioPlayer');
+  let currentPlayingAyahElement = null;
+  let currentPlayingAyahGlobalNumber = null;
+  
+  const surahPlayIcon = document.getElementById('playIconSurah');
+  const surahPauseIcon = document.getElementById('pauseIconSurah');
+  const surahProgressBar = document.getElementById('surahProgressBar');
+  const surahSeekSlider = document.getElementById('surahSeekSlider');
+  const currentPlayingAyahInfo = document.getElementById('currentPlayingAyahInfo');
+  let surahAyahsDataForView = [];
+  let currentSurahAyahIdx = 0;
+  let isSurahPlaying = false;
+
+  let ayahDataForViewOnError = null; // Keep track of the ayah data that caused an error
+
+  function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  function removeTashkeel(text) {
+    if (typeof text !== 'string') return '';
+    return text
+      .replace(/[\u064B-\u0652]/g, '')
+      .replace(/ٱ|[أإآ]/g, 'ا')
+      .replace(/ى/g, 'ي')
+      .replace(/ة/g, 'ه');
+  }
+
+  function highlight(text, query) {
+    if (!query || typeof text !== 'string') return text;
     try {
-      const response = await fetch('https://api.alquran.cloud/v1/quran/ar.asad');
+        const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        return text.replace(regex, (match) => `<mark>${match}</mark>`);
+    } catch (e) {
+        console.warn("Highlighting regex error:", e);
+        return text;
+    }
+  }
+
+  async function loadQuran() {
+    initialMessage.textContent = "...جار تحميل كامل القرآن، انتظر قليلاً";
+    try {
+      const response = await fetch(`${API_BASE_URL}/quran/${QURAN_TEXT_EDITION}`);
       const data = await response.json();
 
       if (data.code !== 200 || !data.data || !data.data.surahs) {
-        resultsDiv.innerHTML = '<p>حدث خطأ في تحميل القرآن.</p>';
+        initialMessage.innerHTML = '<p class="text-red-400">حدث خطأ في تحميل القرآن.</p>';
         return;
       }
 
-      // جمع كل الآيات في مصفوفة واحدة
       allAyahs = [];
       data.data.surahs.forEach(surah => {
         surah.ayahs.forEach(ayah => {
           allAyahs.push({
+            surahNumber: surah.number,
             surahName: surah.name,
             numberInSurah: ayah.numberInSurah,
-            text: ayah.text
+            text: ayah.text,
+            ayahGlobalNumber: ayah.number
           });
         });
       });
+      
+      initialMessage.innerHTML = '<p class="text-green-400">تم تحميل القرآن. ابدأ بالبحث!</p>';
+      setTimeout(() => {
+          if (initialMessage.parentNode === resultsDiv && searchInput.value.length === 0) {
+              initialMessage.remove();
+          }
+      }, 3000);
 
-      resultsDiv.innerHTML = '<p>تم تحميل القرآن بالكامل. ابدأ بالبحث!</p>';
     } catch (error) {
-      resultsDiv.innerHTML = '<p>حدث خطأ أثناء تحميل القرآن.</p>';
+      initialMessage.innerHTML = `<p class="text-red-400">حدث خطأ أثناء تحميل القرآن: ${error.message}</p>`;
       console.error(error);
     }
   }
 
-  // دالة لإزالة التشكيل وتوحيد الهمزات والتاء المربوطة
-  function removeTashkeel(text) {
-    return text
-      .replace(/[\u064B-\u0652]/g, '')   // حذف التشكيل
-      .replace(/[ءأإآ]/g, 'ا')           // توحيد الهمزات إلى ألف
-      .replace(/ة/g, 'ه');               // تحويل التاء المربوطة إلى هاء
-  }
+  function performLocalSearch(originalQuery) {
+    if (initialMessage && initialMessage.parentNode === resultsDiv) {
+      initialMessage.remove();
+    }
 
-  // دالة لتظليل الكلمة داخل النص
-  function highlight(text, query) {
-    if (!query) return text;
-    const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'); // الهروب من رموز خاصة
-    return text.replace(regex, (match) => `<mark>${match}</mark>`);
-  }
-
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim();
-
-    if (query.length === 0) {
-      resultsDiv.innerHTML = '<p>الرجاء كتابة كلمة أو حرف للبحث.</p>';
+    if (originalQuery.length === 0) {
+      resultsDiv.innerHTML = '<p class="col-span-full text-center text-slate-500 py-10">الرجاء كتابة كلمة أو حرف للبحث.</p>';
+      resultsSummaryDiv.textContent = '';
       return;
     }
 
-    const normalizedQuery = removeTashkeel(query);
-    const results = allAyahs.filter(ayah => removeTashkeel(ayah.text).includes(normalizedQuery));
+    const normalizedQuery = removeTashkeel(originalQuery);
+    const searchResults = allAyahs.filter(ayah => removeTashkeel(ayah.text).includes(normalizedQuery));
 
-    if (results.length === 0) {
-      resultsDiv.innerHTML = '<p>لا توجد نتائج مطابقة.</p>';
+    if (searchResults.length === 0) {
+      resultsDiv.innerHTML = `<p class="col-span-full text-center text-slate-400 py-10">لا توجد نتائج مطابقة لـ "${originalQuery}".</p>`;
+      resultsSummaryDiv.textContent = '';
       return;
     }
 
-    // عرض النتائج مع تظليل النص
     let html = '';
-    results.forEach(ayah => {
+    searchResults.forEach(ayah => {
       html += `
-        <div class="result border rounded-xl bg-white/70 p-4 shadow-sm backdrop-blur-md">
-          <div class="surah-name font-bold mb-2">${ayah.surahName} - آية رقم ${ayah.numberInSurah}</div>
-          <div class="ayah-text">${highlight(ayah.text, query)}</div>
+        <div class="result-card bg-slate-800/70 backdrop-blur-md p-5 rounded-xl shadow-lg hover:shadow-amber-500/20 transition-all duration-300 flex flex-col space-y-3"
+             data-surah-number="${ayah.surahNumber}"
+             data-ayah-number-in-surah="${ayah.numberInSurah}"
+             data-ayah-global-number="${ayah.ayahGlobalNumber}"
+             data-surah-name="${ayah.surahName}"
+             data-ayah-text-raw="${ayah.text.replace(/"/g, '"')}">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-amber-400">${ayah.surahName} - آية ${ayah.numberInSurah}</h3>
+            <span class="text-xs text-slate-500">الآية ${ayah.ayahGlobalNumber} في المصحف</span>
+          </div>
+          <p class="font-quran-sm text-slate-200 leading-relaxed ayah-text-container">${highlight(ayah.text, originalQuery)}</p>
+          <div class="flex flex-col space-y-2 pt-3 border-t border-slate-700/50 mt-auto">
+            <div class="flex space-x-3 space-x-reverse">
+                <button class="btn-play-ayah btn-icon flex items-center justify-center flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-3 rounded-md transition-colors duration-200 text-sm">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>
+                استماع
+                </button>
+                <button class="btn-view-surah btn-icon flex items-center justify-center flex-1 bg-sky-600 hover:bg-sky-500 text-white py-2 px-3 rounded-md transition-colors duration-200 text-sm">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16h1.053c.256.162.527.296.806.399V4.804zM11 16.399c.279-.103.55-.237.806-.399H12.5c1.255 0 2.443-.29 3.5-.804V4.804C14.943 4.29 13.755 4 12.5 4S10.057 4.29 9 4.804v11.595zM10.5 18c-.256-.162-.527-.296-.806-.399V2.399c.279.103.55.237.806.399V18z"></path></svg>
+                عرض السورة
+                </button>
+                <button class="btn-quick-view btn-icon flex items-center justify-center flex-1 bg-violet-600 hover:bg-violet-500 text-white py-2 px-3 rounded-md transition-colors duration-200 text-sm">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"></path><path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.18l.879-.585A1.734 1.734 0 002.6 8.22c.312-.449.74-.832 1.208-1.142a11.247 11.247 0 0011.384 0c.468.31.896.693 1.208 1.142a1.734 1.734 0 001.057.585l.879.585a1.651 1.651 0 010 1.18l-.879.585a1.734 1.734 0 00-1.057.585c-.312.449-.74.832-1.208 1.142a11.247 11.247 0 00-11.384 0c-.468-.31-.896-.693-1.208-1.142a1.734 1.734 0 00-1.057-.585l-.879-.585zM10 14a4 4 0 100-8 4 4 0 000 8z" clip-rule="evenodd"></path></svg>
+                نظرة سريعة
+                </button>
+            </div>
+            <p class="audio-error-placeholder error-message text-center" style="display: none;"></p>
+          </div>
         </div>
       `;
     });
+    resultsDiv.innerHTML = html;
+    resultsSummaryDiv.textContent = `تم العثور على ${searchResults.length} آية مطابقة.`;
+    addResultCardListeners();
+  }
 
-    // حساب عدد السور المختلفة
-    const surahNames = new Set(results.map(ayah => ayah.surahName));
-    const summaryHtml = `
-      <p><strong>عدد الآيات المطابقة:</strong> ${results.length}</p>
-      <p><strong>عدد السور المختلفة:</strong> ${surahNames.size}</p>
-    `;
-    resultsDiv.innerHTML = summaryHtml + html;
-    addCardClickEvents();
-  });
+  searchInput.addEventListener('input', debounce(() => {
+    const query = searchInput.value.trim();
+    performLocalSearch(query);
+  }, 300));
 
-  // بدء تحميل القرآن عند فتح الصفحة
-  loadQuran();
-
-  // عناصر العرض المكبر
   const overlay = document.getElementById('overlay');
   const expandedCard = document.getElementById('expandedCard');
   const closeBtn = document.getElementById('closeBtn');
   const expandedSurahName = document.getElementById('expandedSurahName');
   const expandedAyahText = document.getElementById('expandedAyahText');
+  const expandedPlayAyahBtn = document.getElementById('expandedPlayAyahBtn');
+  const expandedAudioError = document.getElementById('expandedAudioError');
+  let expandedAyahGlobalNum = null;
 
-  // دالة فتح البطاقة المكبرة
-  function openExpandedCard(surahName, ayahText) {
+  function openExpandedCard(surahName, ayahText, ayahGlobalNumber) {
     expandedSurahName.textContent = surahName;
     expandedAyahText.innerHTML = ayahText;
+    expandedAyahGlobalNum = ayahGlobalNumber;
+    expandedAudioError.style.display = 'none';
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
-    expandedCard.focus();
+    closeBtn.focus(); 
   }
-
-  // إغلاق البطاقة
   function closeExpandedCard() {
+    searchInput.focus();
     overlay.classList.remove('active');
     overlay.setAttribute('aria-hidden', 'true');
-    expandedSurahName.textContent = '';
-    expandedAyahText.textContent = '';
-    searchInput.focus();
+    stopAudio();
   }
-
-  // حدث إغلاق زر الإغلاق
   closeBtn.addEventListener('click', closeExpandedCard);
-
-  // إغلاق عند الضغط خارج البطاقة المكبرة
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeExpandedCard();
-  });
-
-  // إغلاق عند الضغط على زر Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && overlay.classList.contains('active')) {
-      closeExpandedCard();
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExpandedCard(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('active')) closeExpandedCard(); });
+  
+  expandedPlayAyahBtn.addEventListener('click', () => {
+    if (expandedAyahGlobalNum) {
+      expandedAudioError.style.display = 'none';
+      playAyahAudio(expandedAyahGlobalNum, null, expandedPlayAyahBtn, expandedAudioError)
+        .catch(err => { /* Optionally handle specific UI for expanded card error here if needed */ });
     }
   });
 
-  // إضافة أحداث للبطاقات المفتوحة عند توليدها
-  function addCardClickEvents() {
-    const cards = document.querySelectorAll('.result');
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        openExpandedCard(
-          card.querySelector('.surah-name').textContent,
-          card.querySelector('.ayah-text').innerHTML
-        );
+  const surahViewModal = document.getElementById('surahViewModal');
+  const surahViewTitle = document.getElementById('surahViewTitle');
+  const surahViewContent = document.getElementById('surahViewContent');
+  const closeSurahViewBtn = document.getElementById('closeSurahViewBtn');
+
+  async function displayFullSurah(surahNumber, surahName, ayahToHighlightGlobalNum) {
+    showLoading();
+    surahViewTitle.textContent = surahName;
+    surahViewContent.innerHTML = '<div class="text-center p-10 text-slate-400">جاري تحميل السورة...</div>';
+    surahViewModal.classList.remove('opacity-0', 'pointer-events-none');
+    surahViewModal.classList.add('opacity-100', 'pointer-events-auto');
+    surahViewModal.setAttribute('aria-hidden', 'false');
+    closeSurahViewBtn.focus();
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/surah/${surahNumber}/${QURAN_TEXT_EDITION}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+
+      if (data.code !== 200 || !data.data || !data.data.ayahs) {
+        surahViewContent.innerHTML = `<p class="text-center text-red-400 p-10">خطأ في تحميل بيانات السورة.</p>`;
+        hideLoading();
+        return;
+      }
+
+      surahAyahsDataForView = data.data.ayahs.map((ayah, index) => ({
+        ...ayah,
+        localIndex: index,
+        elementId: `surah-ayah-${surahNumber}-${ayah.numberInSurah}`
+      }));
+
+      let ayahsHtml = '';
+      surahAyahsDataForView.forEach(ayah => {
+        ayahsHtml += `
+          <div id="${ayah.elementId}" class="surah-ayah-item p-3 rounded-md hover:bg-slate-700/50 transition-colors duration-150" data-ayah-local-idx="${ayah.localIndex}">
+            <p class="font-quran text-slate-100 mb-1">${ayah.text}
+              <span class="text-amber-400 text-lg select-none">﴿${ayah.numberInSurah}﴾</span>
+            </p>
+          </div>
+        `;
+      });
+      surahViewContent.innerHTML = ayahsHtml;
+      
+      currentSurahAyahIdx = 0;
+      isSurahPlaying = false;
+      updateSurahPlayPauseIcons();
+      surahProgressBar.style.width = '0%';
+      currentPlayingAyahInfo.textContent = '';
+
+      if (ayahToHighlightGlobalNum) {
+        const targetAyahData = surahAyahsDataForView.find(a => a.number === ayahToHighlightGlobalNum);
+        if (targetAyahData) {
+            const targetElement = document.getElementById(targetAyahData.elementId);
+            if (targetElement) {
+                targetElement.classList.add('bg-amber-500/10', 'ring-1', 'ring-amber-500/30');
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                currentSurahAyahIdx = targetAyahData.localIndex;
+            }
+        }
+      } else {
+         surahViewContent.scrollTop = 0;
+      }
+
+    } catch (error) {
+      surahViewContent.innerHTML = `<p class="text-center text-red-400 p-10">حدث خطأ أثناء تحميل السورة: ${error.message}</p>`;
+      console.error("Error in displayFullSurah:", error);
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function closeSurahView() {
+    searchInput.focus();
+    surahViewModal.classList.add('opacity-0', 'pointer-events-none');
+    surahViewModal.classList.remove('opacity-100', 'pointer-events-auto');
+    surahViewModal.setAttribute('aria-hidden', 'true');
+    stopAudio(); // This will also set isSurahPlaying to false.
+  }
+  closeSurahViewBtn.addEventListener('click', closeSurahView);
+  document.addEventListener('keydown', (e) => { 
+    if (e.key === 'Escape' && surahViewModal.classList.contains('opacity-100')) {
+        closeSurahView(); 
+    }
+  });
+
+  function addResultCardListeners() {
+    document.querySelectorAll('.result-card').forEach(card => {
+      const surahNum = card.dataset.surahNumber;
+      const surahName = card.dataset.surahName;
+      const ayahGlobalNum = parseInt(card.dataset.ayahGlobalNumber);
+      const highlightedAyahHTML = card.querySelector('.ayah-text-container').innerHTML;
+      const playButton = card.querySelector('.btn-play-ayah');
+      const errorPlaceholder = card.querySelector('.audio-error-placeholder');
+
+      playButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if(errorPlaceholder) errorPlaceholder.style.display = 'none';
+        playAyahAudio(ayahGlobalNum, card.querySelector('.ayah-text-container'), playButton, errorPlaceholder)
+            .catch(err => { /* Individual card click error can be ignored here as UI is handled in playAyahAudio */ });
+      });
+      card.querySelector('.btn-view-surah').addEventListener('click', (e) => {
+        e.stopPropagation();
+        displayFullSurah(surahNum, surahName, ayahGlobalNum);
+      });
+      card.querySelector('.btn-quick-view').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openExpandedCard(`${surahName} - آية ${card.dataset.ayahNumberInSurah}`, highlightedAyahHTML, ayahGlobalNum);
       });
     });
   }
+
+  function playAyahAudio(ayahGlobalNum, textElementToHighlight, buttonElement, errorElement) {
+    // Ensure that only one set of event listeners is active at a time for 'ended' and 'error'
+    // by removing them before adding.
+    const handleAudioEnded = () => {
+        cleanupAfterAudio(false, buttonElement, errorElement);
+        if (isSurahPlaying) {
+            playNextAyahInSurah();
+        }
+        // Resolve the promise if this function were to return one and it wasn't handled by the promise itself
+    };
+
+    const handleAudioError = (event) => {
+        // Use 'event.target.error' for more details if available
+        const audioError = event && event.target && event.target.error ? event.target.error : {name: "UnknownError", message: "Unknown audio error"};
+        console.error(`Audio error for Ayah ${currentPlayingAyahGlobalNumber || ayahGlobalNum}:`, audioError.name, audioError.message);
+        
+        const errorMessage = "عفواً، الملف الصوتي لهذه الآية غير متاح حالياً.";
+        if (errorElement) {
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = 'block';
+        } else if (buttonElement && buttonElement.id === 'expandedPlayAyahBtn') {
+            expandedAudioError.textContent = errorMessage;
+            expandedAudioError.style.display = 'block';
+        } else if (isSurahPlaying) {
+            currentPlayingAyahInfo.textContent = `خطأ: ${errorMessage} (آية ${ayahDataForViewOnError?.numberInSurah || currentPlayingAyahGlobalNumber || ayahGlobalNum})`;
+        }
+        
+        cleanupAfterAudio(true, buttonElement, errorElement);
+        if (isSurahPlaying) {
+            // Allow playNextAyahInSurah to handle skipping or stopping based on its logic
+            // It will be called via the promise rejection or if it's already in a loop
+        }
+        // Reject the promise if this function returns one
+        // For now, the promise is created outside and this handler is part of it.
+    };
+    
+    globalAudioPlayer.removeEventListener('ended', handleAudioEnded); // Remove previous if any
+    globalAudioPlayer.removeEventListener('error', handleAudioError); // Remove previous if any
+
+    return new Promise((resolve, reject) => {
+        stopAudio(); // Stops previous, cleans up, and sets currentPlayingAyahGlobalNumber to null
+        if (errorElement) errorElement.style.display = 'none';
+
+        currentPlayingAyahGlobalNumber = ayahGlobalNum; // Set it for the new ayah
+        const audioUrl = `${API_BASE_URL}/ayah/${ayahGlobalNum}/${AUDIO_EDITION}`;
+        if (!ayahGlobalNum) { // Handle cases where ayahGlobalNum might be null/undefined
+             console.error("playAyahAudio called with invalid ayahGlobalNum:", ayahGlobalNum);
+             if(errorElement) {
+                errorElement.textContent = "خطأ: رقم الآية غير صحيح.";
+                errorElement.style.display = 'block';
+             }
+             cleanupAfterAudio(true, buttonElement, errorElement);
+             return reject(new Error("Invalid Ayah Number"));
+        }
+        globalAudioPlayer.src = audioUrl;
+        
+        globalAudioPlayer.addEventListener('ended', handleAudioEnded, { once: true });
+        globalAudioPlayer.addEventListener('error', handleAudioError, { once: true });
+        
+        const playPromise = globalAudioPlayer.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                if (textElementToHighlight) {
+                    currentPlayingAyahElement = textElementToHighlight;
+                    currentPlayingAyahElement.classList.add('ayah-highlight-active');
+                } else if (overlay.classList.contains('active')) {
+                    currentPlayingAyahElement = expandedAyahText;
+                    if (currentPlayingAyahElement) currentPlayingAyahElement.classList.add('ayah-highlight-active');
+                }
+                if (buttonElement) {
+                    buttonElement.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> جار التشغيل...`;
+                    buttonElement.disabled = true;
+                }
+                resolve();
+            })
+            .catch(error => {
+                // This catch is for the play() promise itself. The 'error' event on audio element is more general.
+                // The handleAudioError function will be called by the 'error' event.
+                // We just need to ensure the promise is rejected.
+                console.warn(`play() promise rejected for Ayah ${ayahGlobalNum}:`, error.name, error.message); // Log as warning, error event is primary
+                reject(error); 
+            });
+        } else { 
+            resolve(); 
+        }
+    });
+  }
+  
+  function stopAudio() {
+    globalAudioPlayer.pause();
+    if (globalAudioPlayer.src) {
+        globalAudioPlayer.currentTime = 0;
+        globalAudioPlayer.src = ""; // This can trigger an 'error' event if not handled, e.g. "Empty src"
+    }
+    // Remove listeners attached in playAyahAudio to prevent them from firing on this explicit stop
+    // This requires handleAudioEnded and handleAudioError to be accessible or defined in a way they can be removed
+    // For simplicity, we'll rely on the {once: true} option to auto-remove them after firing.
+    // However, an explicit stop means they *won't* fire, so they might remain if not careful.
+    // A better approach might be to define these handlers outside and use add/removeEventListener.
+    // For now, `cleanupAfterAudio` handles UI.
+    cleanupAfterAudio(); 
+    // If surah was playing, this stop action (e.g. user pressing overall stop, or closing modal) should stop surah sequence.
+    if (isSurahPlaying) {
+        isSurahPlaying = false;
+        updateSurahPlayPauseIcons();
+    }
+  }
+
+  function cleanupAfterAudio(isError = false, specificButton = null, specificErrorElement = null) {
+    if (currentPlayingAyahElement) {
+      currentPlayingAyahElement.classList.remove('ayah-highlight-active');
+      currentPlayingAyahElement = null;
+    }
+
+    if (specificButton) {
+        specificButton.disabled = false;
+        const defaultText = specificButton.id === 'expandedPlayAyahBtn' ? 'استمع للآية' : 'استماع';
+        specificButton.innerHTML = `<svg fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg> ${defaultText}`;
+        if (specificErrorElement && !isError) {
+            specificErrorElement.style.display = 'none';
+        }
+    } else {
+        document.querySelectorAll('.btn-play-ayah[disabled], #expandedPlayAyahBtn[disabled]').forEach(btn => {
+            btn.disabled = false;
+            const defaultText = btn.id === 'expandedPlayAyahBtn' ? 'استمع للآية' : 'استماع';
+            btn.innerHTML = `<svg fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg> ${defaultText}`;
+            
+            const card = btn.closest('.result-card');
+            if (card) {
+                const errPlc = card.querySelector('.audio-error-placeholder');
+                if (errPlc && (!isError || (isError && btn !== specificButton))) errPlc.style.display = 'none';
+            }
+            if (btn.id === 'expandedPlayAyahBtn' && (!isError || (isError && btn !== specificButton))) {
+                expandedAudioError.style.display = 'none';
+            }
+        });
+    }
+    currentPlayingAyahGlobalNumber = null; // Clear the global number tracker
+  }
+
+  function updateSurahPlayPauseIcons() {
+    if (isSurahPlaying) {
+      surahPlayIcon.classList.add('hidden');
+      surahPauseIcon.classList.remove('hidden');
+    } else {
+      surahPlayIcon.classList.remove('hidden');
+      surahPauseIcon.classList.add('hidden');
+    }
+  }
+
+  async function playNextAyahInSurah() {
+    if (!isSurahPlaying || currentSurahAyahIdx >= surahAyahsDataForView.length) {
+      isSurahPlaying = false;
+      updateSurahPlayPauseIcons();
+      if (currentPlayingAyahElement) currentPlayingAyahElement.classList.remove('ayah-highlight-active');
+      currentPlayingAyahInfo.textContent = surahAyahsDataForView.length > 0 ? "انتهت تلاوة السورة" : "لا توجد آيات لتلاوتها";
+      surahProgressBar.style.width = surahAyahsDataForView.length > 0 ? '100%' : '0%';
+      ayahDataForViewOnError = null; // Reset error context
+      return;
+    }
+
+    const ayahData = surahAyahsDataForView[currentSurahAyahIdx];
+    ayahDataForViewOnError = ayahData;
+    const ayahElement = document.getElementById(ayahData.elementId);
+
+    if (currentPlayingAyahElement) currentPlayingAyahElement.classList.remove('ayah-highlight-active');
+    if (ayahElement) {
+        ayahElement.classList.add('ayah-highlight-active');
+        ayahElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        currentPlayingAyahElement = ayahElement;
+    }
+    
+    currentPlayingAyahInfo.textContent = `جاري تلاوة: ${surahViewTitle.textContent} - الآية ${ayahData.numberInSurah}`;
+    
+    try {
+        // playAyahAudio handles its own onended and onerror for sequence.
+        // The promise here is mainly to know if the *initiation* of play was successful or not.
+        await playAyahAudio(ayahData.number, null, null, null); 
+        // If successful, the 'ended' event inside playAyahAudio will call playNextAyahInSurah.
+        // No need to increment currentSurahAyahIdx here for the success path.
+    } catch (error) {
+        // This catch block in playNextAyahInSurah will be hit if playAyahAudio's promise is rejected.
+        console.log(`Error caught in playNextAyahInSurah for Ayah ${ayahData.numberInSurah}, isSurahPlaying: ${isSurahPlaying}. Error: ${error.message}`);
+        if (isSurahPlaying) { 
+            currentPlayingAyahInfo.textContent = `خطأ في الآية ${ayahData.numberInSurah}, محاولة الانتقال للتالية...`;
+            currentSurahAyahIdx++; 
+            setTimeout(playNextAyahInSurah, 1000); 
+        } else {
+            updateSurahPlayPauseIcons(); 
+            ayahDataForViewOnError = null;
+        }
+    }
+
+    // This ontimeupdate should ideally be set once globally or managed carefully.
+    // If set here, it might conflict if another audio starts playing outside surah sequence.
+    globalAudioPlayer.ontimeupdate = () => {
+        if (globalAudioPlayer.duration && surahAyahsDataForView.length > 0 && isSurahPlaying) {
+            const currentAyahProgress = globalAudioPlayer.currentTime / globalAudioPlayer.duration;
+            // Ensure currentSurahAyahIdx is within bounds for progress calculation
+            const validCurrentSurahAyahIdx = Math.min(currentSurahAyahIdx, surahAyahsDataForView.length - 1);
+            const overallProgress = ((validCurrentSurahAyahIdx + currentAyahProgress) / surahAyahsDataForView.length) * 100;
+            
+            surahProgressBar.style.width = `${Math.min(100, Math.max(0, overallProgress))}%`;
+            surahSeekSlider.value = Math.min(100, Math.max(0, overallProgress));
+        }
+    };
+  }
+
+  document.getElementById('playPauseSurahBtn').addEventListener('click', () => {
+    if (surahAyahsDataForView.length === 0) return;
+    
+    if (isSurahPlaying) { // User wants to pause
+        isSurahPlaying = false;
+        globalAudioPlayer.pause(); // Pause the audio
+        currentPlayingAyahInfo.textContent = "التلاوة متوقفة مؤقتاً";
+    } else { // User wants to play (or resume)
+        isSurahPlaying = true;
+        // Check if we can resume current audio or start the sequence
+        if (globalAudioPlayer.paused && globalAudioPlayer.src && 
+            currentPlayingAyahGlobalNumber === surahAyahsDataForView[currentSurahAyahIdx]?.number) {
+            
+            const resumePromise = globalAudioPlayer.play();
+            if (resumePromise !== undefined) {
+                resumePromise.catch(err => {
+                    console.error("Resume error:", err);
+                    isSurahPlaying = false; 
+                    currentPlayingAyahInfo.textContent = "خطأ عند استئناف التلاوة.";
+                    updateSurahPlayPauseIcons(); // Correct icon if resume fails
+                });
+            }
+        } else {
+            // If not resuming (e.g., different ayah, or src is empty), play the sequence.
+            // currentSurahAyahIdx should already be at the correct point (either start or where it was left/seeked)
+            playNextAyahInSurah();
+        }
+    }
+    updateSurahPlayPauseIcons();
+  });
+
+  document.getElementById('surahSeekSlider').addEventListener('input', (e) => {
+      if (surahAyahsDataForView.length === 0) return;
+      
+      const كان_يشغل = isSurahPlaying; // Store current playing state
+      isSurahPlaying = false; // Temporarily pause to handle seek
+      globalAudioPlayer.pause();
+      if (globalAudioPlayer.src) globalAudioPlayer.src = ""; 
+
+
+      const seekPercentage = parseFloat(e.target.value);
+      const targetAyahAbsoluteIdx = (seekPercentage / 100) * surahAyahsDataForView.length;
+      let newAyahIdx = Math.floor(targetAyahAbsoluteIdx);
+      
+      if (newAyahIdx >= surahAyahsDataForView.length) newAyahIdx = surahAyahsDataForView.length - 1;
+      if (newAyahIdx < 0) newAyahIdx = 0;
+
+      currentSurahAyahIdx = newAyahIdx;
+      
+      // Update highlight for the seeked Ayah
+      if(currentPlayingAyahElement) currentPlayingAyahElement.classList.remove('ayah-highlight-active');
+      const ayahDataSeeked = surahAyahsDataForView[currentSurahAyahIdx];
+      if (ayahDataSeeked) {
+          const ayahElement = document.getElementById(ayahDataSeeked.elementId);
+          if (ayahElement) {
+              ayahElement.classList.add('ayah-highlight-active');
+              currentPlayingAyahElement = ayahElement; // Update current element for highlighting
+          }
+          currentPlayingAyahInfo.textContent = `متوقف عند: ${surahViewTitle.textContent} - الآية ${ayahDataSeeked.numberInSurah}`;
+      }
+      surahProgressBar.style.width = `${seekPercentage}%`;
+
+      if (كان_يشغل) { // If it was playing before seek, resume playing from new spot
+          isSurahPlaying = true;
+          playNextAyahInSurah();
+      }
+      updateSurahPlayPauseIcons(); // Update icons based on the final state of isSurahPlaying
+  });
+
+  loadQuran();
+  hideLoading();
 </script>
 </body>
 </html>
