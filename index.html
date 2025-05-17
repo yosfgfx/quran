@@ -8,47 +8,87 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- خط Inter لواجهة المستخدم -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* خط Yousef كاحتياطي إذا لم يتم تحميل Inter أو الخطوط المحلية */
     @font-face {
-      font-family: 'Yousef';
-      src: url('./yousef-regular.woff2') format('woff2'),
-           url('./yousef-regular.woff') format('woff'),
-           url('./yousef-regular.ttf') format('truetype');
+      font-family: 'Yousef'; 
+  src: url('./kitab-base-b.woff2') format('woff2'),
+           url('./kitab-base-b.woff2') format('woff'),
+           url('./kitab-base-b.woff2') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'Yousef';
-      src: url('./yousef-Bold.woff2') format('woff2'),
-           url('./yousef-Bold.woff') format('woff'),
-           url('./yousef-Bold.ttf') format('truetype');
+  src: url('./kitab-base-b.woff2') format('woff2'),
+       url('./kitab-base-b.woff2') format('woff'),
+       url('./kitab-base-b.woff2') format('truetype');
       font-weight: 700;
       font-style: normal;
       font-display: swap;
     }
 
+    /* تعريف خط Kitab المحلي */
+    @font-face {
+      font-family: 'Kitab';
+  src: url('./kitab-base.woff2') format('woff2'); 
+      font-weight: normal; /* 400 */
+      font-style: normal;
+      font-display: swap; 
+    }
+    /* إذا كان لديك وزن غامق منفصل لـ Kitab */
+    /*
+    @font-face {
+      font-family: 'Kitab';
+      src: url('./kitab-base-b.woff2') format('woff2');
+      font-weight: bold; // 700
+      font-style: normal;
+      font-display: swap;
+    }
+    */
+
     body {
-      font-family: 'Inter', 'Yousef', sans-serif;
+      font-family: 'Inter', 'Yousef', ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
     h1, h2, h3, h4, h5, h6 {
-      font-family: 'Inter', 'Yousef', sans-serif;
+      font-family: 'Inter', 'Yousef', ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
       font-weight: 700;
     }
-    .font-quran {
-      font-family: 'Amiri', 'Yousef', serif;
-      font-size: 1.65rem;
-      line-height: 2.8;
+    
+    .font-quran { 
+      font-family: 'Kitab', 'Yousef', serif; 
+      font-size: 1.9rem;  
+      line-height: 3;    
+      direction: rtl; 
+      text-align: justify; 
+      letter-spacing: normal !important; /* التأكد من عدم تأثير Tailwind */
     }
-    .font-quran-sm {
-        font-family: 'Amiri', 'Yousef', serif;
-        font-size: 1.25rem;
-        line-height: 2.5;
+    .font-quran-sm { 
+        font-family: 'Kitab', 'Yousef', serif; 
+        font-size: 1.5rem; 
+        line-height: 2.8; 
+        direction: rtl;
+        text-align: right; 
+        letter-spacing: normal !important; /* التأكد من عدم تأثير Tailwind */
+    }
+    
+    .font-quran .text-amber-400,
+    .font-quran-sm .text-amber-400 { 
+        font-family: 'Kitab', sans-serif; 
+        font-size: 1.1rem; 
+        font-weight: normal;
+        display: inline-block;
+        vertical-align: middle; 
+        padding: 0 0.2em; 
+        line-height: 1; 
     }
 
+    /* CSS من الكود الأصلي (Overlay, Expanded Card, etc.) */
     .overlay {
       opacity: 0;
       pointer-events: none;
@@ -58,7 +98,6 @@
       opacity: 1;
       pointer-events: auto;
     }
-
     .expanded-card {
       background: rgba(30, 41, 59, 0.85);
       -webkit-backdrop-filter: blur(10px);
@@ -77,7 +116,6 @@
     .close-btn:hover {
       color: #f59e0b;
     }
-
     .custom-scrollbar::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -211,13 +249,18 @@
 <audio id="globalAudioPlayer" preload="metadata"></audio>
 
 <script>
+  // ... (JavaScript code remains the same as the previous version) ...
+  // The JavaScript part doesn't need to change for this font update,
+  // as the font application is handled purely by CSS.
+  // Make sure the JavaScript from the "previous working version for audio" is here.
+
   const searchInput = document.getElementById('searchInput');
   const resultsDiv = document.getElementById('results');
   const resultsSummaryDiv = document.getElementById('resultsSummary');
   const initialMessage = document.getElementById('initialMessage');
 
   const API_BASE_URL = 'https://api.alquran.cloud/v1';
-  const QURAN_TEXT_EDITION = 'ar.quran-uthmani';
+  const QURAN_TEXT_EDITION = 'ar.quran-uthmani'; // This is for the text we load initially
   const AUDIO_EDITION = 'ar.almuaiqly';
 
   let allAyahs = [];
@@ -228,7 +271,7 @@
 
   const globalAudioPlayer = document.getElementById('globalAudioPlayer');
   let currentPlayingAyahElement = null;
-  let currentPlayingAyahGlobalNumber = null;
+  let currentPlayingAyahGlobalNumber = null; 
   
   const surahPlayIcon = document.getElementById('playIconSurah');
   const surahPauseIcon = document.getElementById('pauseIconSurah');
@@ -239,7 +282,7 @@
   let currentSurahAyahIdx = 0;
   let isSurahPlaying = false;
 
-  let ayahDataForViewOnError = null; // Keep track of the ayah data that caused an error
+  let ayahDataForViewOnError = null; 
 
   function debounce(func, delay) {
     let timeout;
@@ -272,7 +315,8 @@
   async function loadQuran() {
     initialMessage.textContent = "...جار تحميل كامل القرآن، انتظر قليلاً";
     try {
-      const response = await fetch(`${API_BASE_URL}/quran/${QURAN_TEXT_EDITION}`);
+      // We fetch `ar.quran-uthmani` as it usually has better text for display and global ayah numbers.
+      const response = await fetch(`${API_BASE_URL}/quran/${QURAN_TEXT_EDITION}`); 
       const data = await response.json();
 
       if (data.code !== 200 || !data.data || !data.data.surahs) {
@@ -288,7 +332,7 @@
             surahName: surah.name,
             numberInSurah: ayah.numberInSurah,
             text: ayah.text,
-            ayahGlobalNumber: ayah.number
+            ayahGlobalNumber: ayah.number // Crucial for audio and detailed view
           });
         });
       });
@@ -402,7 +446,7 @@
     if (expandedAyahGlobalNum) {
       expandedAudioError.style.display = 'none';
       playAyahAudio(expandedAyahGlobalNum, null, expandedPlayAyahBtn, expandedAudioError)
-        .catch(err => { /* Optionally handle specific UI for expanded card error here if needed */ });
+        .catch(err => { /* UI handled in playAyahAudio */ });
     }
   });
 
@@ -482,7 +526,7 @@
     surahViewModal.classList.add('opacity-0', 'pointer-events-none');
     surahViewModal.classList.remove('opacity-100', 'pointer-events-auto');
     surahViewModal.setAttribute('aria-hidden', 'true');
-    stopAudio(); // This will also set isSurahPlaying to false.
+    stopAudio();
   }
   closeSurahViewBtn.addEventListener('click', closeSurahView);
   document.addEventListener('keydown', (e) => { 
@@ -504,7 +548,7 @@
         e.stopPropagation();
         if(errorPlaceholder) errorPlaceholder.style.display = 'none';
         playAyahAudio(ayahGlobalNum, card.querySelector('.ayah-text-container'), playButton, errorPlaceholder)
-            .catch(err => { /* Individual card click error can be ignored here as UI is handled in playAyahAudio */ });
+            .catch(err => { /* Individual card click error is handled by playAyahAudio UI updates */ });
       });
       card.querySelector('.btn-view-surah').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -517,53 +561,20 @@
     });
   }
 
-  function playAyahAudio(ayahGlobalNum, textElementToHighlight, buttonElement, errorElement) {
-    // Ensure that only one set of event listeners is active at a time for 'ended' and 'error'
-    // by removing them before adding.
-    const handleAudioEnded = () => {
-        cleanupAfterAudio(false, buttonElement, errorElement);
-        if (isSurahPlaying) {
-            playNextAyahInSurah();
-        }
-        // Resolve the promise if this function were to return one and it wasn't handled by the promise itself
-    };
-
-    const handleAudioError = (event) => {
-        // Use 'event.target.error' for more details if available
-        const audioError = event && event.target && event.target.error ? event.target.error : {name: "UnknownError", message: "Unknown audio error"};
-        console.error(`Audio error for Ayah ${currentPlayingAyahGlobalNumber || ayahGlobalNum}:`, audioError.name, audioError.message);
-        
-        const errorMessage = "عفواً، الملف الصوتي لهذه الآية غير متاح حالياً.";
-        if (errorElement) {
-            errorElement.textContent = errorMessage;
-            errorElement.style.display = 'block';
-        } else if (buttonElement && buttonElement.id === 'expandedPlayAyahBtn') {
-            expandedAudioError.textContent = errorMessage;
-            expandedAudioError.style.display = 'block';
-        } else if (isSurahPlaying) {
-            currentPlayingAyahInfo.textContent = `خطأ: ${errorMessage} (آية ${ayahDataForViewOnError?.numberInSurah || currentPlayingAyahGlobalNumber || ayahGlobalNum})`;
-        }
-        
-        cleanupAfterAudio(true, buttonElement, errorElement);
-        if (isSurahPlaying) {
-            // Allow playNextAyahInSurah to handle skipping or stopping based on its logic
-            // It will be called via the promise rejection or if it's already in a loop
-        }
-        // Reject the promise if this function returns one
-        // For now, the promise is created outside and this handler is part of it.
-    };
-    
-    globalAudioPlayer.removeEventListener('ended', handleAudioEnded); // Remove previous if any
-    globalAudioPlayer.removeEventListener('error', handleAudioError); // Remove previous if any
+  function playAyahAudio(ayahGlobalNumToPlay, textElementToHighlight, buttonElement, errorElement) {
+    const prevEndedHandler = globalAudioPlayer._handleAudioEnded;
+    const prevErrorHandler = globalAudioPlayer._handleAudioError;
+    if (prevEndedHandler) globalAudioPlayer.removeEventListener('ended', prevEndedHandler);
+    if (prevErrorHandler) globalAudioPlayer.removeEventListener('error', prevErrorHandler);
 
     return new Promise((resolve, reject) => {
-        stopAudio(); // Stops previous, cleans up, and sets currentPlayingAyahGlobalNumber to null
+        stopAudio(); 
         if (errorElement) errorElement.style.display = 'none';
 
-        currentPlayingAyahGlobalNumber = ayahGlobalNum; // Set it for the new ayah
-        const audioUrl = `${API_BASE_URL}/ayah/${ayahGlobalNum}/${AUDIO_EDITION}`;
-        if (!ayahGlobalNum) { // Handle cases where ayahGlobalNum might be null/undefined
-             console.error("playAyahAudio called with invalid ayahGlobalNum:", ayahGlobalNum);
+        currentPlayingAyahGlobalNumber = ayahGlobalNumToPlay;
+        
+        if (!currentPlayingAyahGlobalNumber && currentPlayingAyahGlobalNumber !== 0) { // Allow 0 if it's a valid number for some reason
+             console.error("playAyahAudio called with invalid ayahGlobalNum:", currentPlayingAyahGlobalNumber);
              if(errorElement) {
                 errorElement.textContent = "خطأ: رقم الآية غير صحيح.";
                 errorElement.style.display = 'block';
@@ -571,8 +582,43 @@
              cleanupAfterAudio(true, buttonElement, errorElement);
              return reject(new Error("Invalid Ayah Number"));
         }
-        globalAudioPlayer.src = audioUrl;
         
+        const audioUrl = `${API_BASE_URL}/ayah/${currentPlayingAyahGlobalNumber}/${AUDIO_EDITION}`;
+        globalAudioPlayer.src = audioUrl;
+
+        const handleAudioEnded = () => {
+            cleanupAfterAudio(false, buttonElement, errorElement);
+            if (isSurahPlaying) {
+                currentSurahAyahIdx++; 
+                playNextAyahInSurah();
+            }
+            resolve();
+        };
+
+        const handleAudioError = (event) => {
+            const audioError = event && event.target && event.target.error ? event.target.error : {name: "UnknownError", message: "Unknown audio error"};
+            const errorName = audioError.name || "Error"; // Provide default if name is undefined
+            const errorMessageText = audioError.message || "Unknown audio error"; // Provide default if message is undefined
+            console.error(`Audio error for Ayah ${currentPlayingAyahGlobalNumber}: ${errorName} ${errorMessageText}`);
+            
+            const userErrorMessage = "عفواً، الملف الصوتي لهذه الآية غير متاح حالياً.";
+            if (errorElement) {
+                errorElement.textContent = userErrorMessage;
+                errorElement.style.display = 'block';
+            } else if (buttonElement && buttonElement.id === 'expandedPlayAyahBtn') {
+                expandedAudioError.textContent = userErrorMessage;
+                expandedAudioError.style.display = 'block';
+            } else if (isSurahPlaying) {
+                currentPlayingAyahInfo.textContent = `خطأ: ${userErrorMessage} (آية ${ayahDataForViewOnError?.numberInSurah || currentPlayingAyahGlobalNumber})`;
+            }
+            
+            cleanupAfterAudio(true, buttonElement, errorElement);
+            reject(audioError); 
+        };
+
+        globalAudioPlayer._handleAudioEnded = handleAudioEnded;
+        globalAudioPlayer._handleAudioError = handleAudioError;
+
         globalAudioPlayer.addEventListener('ended', handleAudioEnded, { once: true });
         globalAudioPlayer.addEventListener('error', handleAudioError, { once: true });
         
@@ -591,17 +637,20 @@
                     buttonElement.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> جار التشغيل...`;
                     buttonElement.disabled = true;
                 }
-                resolve();
+                // Do not resolve here; wait for 'ended' or 'error'
             })
             .catch(error => {
-                // This catch is for the play() promise itself. The 'error' event on audio element is more general.
-                // The handleAudioError function will be called by the 'error' event.
-                // We just need to ensure the promise is rejected.
-                console.warn(`play() promise rejected for Ayah ${ayahGlobalNum}:`, error.name, error.message); // Log as warning, error event is primary
-                reject(error); 
+                // This catch is for the play() promise itself.
+                // The 'error' event on the audio element should also fire.
+                // Call handleAudioError to ensure UI updates and our promise rejection.
+                console.warn(`play() promise rejected for Ayah ${currentPlayingAyahGlobalNumber}: ${error.name || 'Error'} ${error.message || 'No message'}`);
+                const syntheticErrorEvent = { target: { error: error }}; // Create a similar structure
+                handleAudioError(syntheticErrorEvent); 
+                // No need to reject here as handleAudioError will do it.
             });
         } else { 
-            resolve(); 
+            const oldBrowserError = new Error("Playback initiation not supported by promise.");
+            handleAudioError({target: {error: oldBrowserError}});
         }
     });
   }
@@ -609,17 +658,18 @@
   function stopAudio() {
     globalAudioPlayer.pause();
     if (globalAudioPlayer.src) {
-        globalAudioPlayer.currentTime = 0;
-        globalAudioPlayer.src = ""; // This can trigger an 'error' event if not handled, e.g. "Empty src"
+        globalAudioPlayer.src = ""; 
     }
-    // Remove listeners attached in playAyahAudio to prevent them from firing on this explicit stop
-    // This requires handleAudioEnded and handleAudioError to be accessible or defined in a way they can be removed
-    // For simplicity, we'll rely on the {once: true} option to auto-remove them after firing.
-    // However, an explicit stop means they *won't* fire, so they might remain if not careful.
-    // A better approach might be to define these handlers outside and use add/removeEventListener.
-    // For now, `cleanupAfterAudio` handles UI.
+    if (globalAudioPlayer._handleAudioEnded) {
+        globalAudioPlayer.removeEventListener('ended', globalAudioPlayer._handleAudioEnded);
+        delete globalAudioPlayer._handleAudioEnded;
+    }
+    if (globalAudioPlayer._handleAudioError) {
+        globalAudioPlayer.removeEventListener('error', globalAudioPlayer._handleAudioError);
+        delete globalAudioPlayer._handleAudioError;
+    }
+
     cleanupAfterAudio(); 
-    // If surah was playing, this stop action (e.g. user pressing overall stop, or closing modal) should stop surah sequence.
     if (isSurahPlaying) {
         isSurahPlaying = false;
         updateSurahPlayPauseIcons();
@@ -636,10 +686,10 @@
         specificButton.disabled = false;
         const defaultText = specificButton.id === 'expandedPlayAyahBtn' ? 'استمع للآية' : 'استماع';
         specificButton.innerHTML = `<svg fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg> ${defaultText}`;
-        if (specificErrorElement && !isError) {
+        if (specificErrorElement && !isError) { 
             specificErrorElement.style.display = 'none';
         }
-    } else {
+    } else { 
         document.querySelectorAll('.btn-play-ayah[disabled], #expandedPlayAyahBtn[disabled]').forEach(btn => {
             btn.disabled = false;
             const defaultText = btn.id === 'expandedPlayAyahBtn' ? 'استمع للآية' : 'استماع';
@@ -648,14 +698,14 @@
             const card = btn.closest('.result-card');
             if (card) {
                 const errPlc = card.querySelector('.audio-error-placeholder');
-                if (errPlc && (!isError || (isError && btn !== specificButton))) errPlc.style.display = 'none';
+                if (errPlc) errPlc.style.display = 'none'; 
             }
-            if (btn.id === 'expandedPlayAyahBtn' && (!isError || (isError && btn !== specificButton))) {
+            if (btn.id === 'expandedPlayAyahBtn') {
                 expandedAudioError.style.display = 'none';
             }
         });
     }
-    currentPlayingAyahGlobalNumber = null; // Clear the global number tracker
+    currentPlayingAyahGlobalNumber = null;
   }
 
   function updateSurahPlayPauseIcons() {
@@ -675,12 +725,12 @@
       if (currentPlayingAyahElement) currentPlayingAyahElement.classList.remove('ayah-highlight-active');
       currentPlayingAyahInfo.textContent = surahAyahsDataForView.length > 0 ? "انتهت تلاوة السورة" : "لا توجد آيات لتلاوتها";
       surahProgressBar.style.width = surahAyahsDataForView.length > 0 ? '100%' : '0%';
-      ayahDataForViewOnError = null; // Reset error context
+      ayahDataForViewOnError = null;
       return;
     }
 
     const ayahData = surahAyahsDataForView[currentSurahAyahIdx];
-    ayahDataForViewOnError = ayahData;
+    ayahDataForViewOnError = ayahData; 
     const ayahElement = document.getElementById(ayahData.elementId);
 
     if (currentPlayingAyahElement) currentPlayingAyahElement.classList.remove('ayah-highlight-active');
@@ -693,14 +743,10 @@
     currentPlayingAyahInfo.textContent = `جاري تلاوة: ${surahViewTitle.textContent} - الآية ${ayahData.numberInSurah}`;
     
     try {
-        // playAyahAudio handles its own onended and onerror for sequence.
-        // The promise here is mainly to know if the *initiation* of play was successful or not.
         await playAyahAudio(ayahData.number, null, null, null); 
-        // If successful, the 'ended' event inside playAyahAudio will call playNextAyahInSurah.
-        // No need to increment currentSurahAyahIdx here for the success path.
+        // If successful, 'ended' handler in playAyahAudio will have incremented currentSurahAyahIdx and called playNextAyahInSurah
     } catch (error) {
-        // This catch block in playNextAyahInSurah will be hit if playAyahAudio's promise is rejected.
-        console.log(`Error caught in playNextAyahInSurah for Ayah ${ayahData.numberInSurah}, isSurahPlaying: ${isSurahPlaying}. Error: ${error.message}`);
+        console.log(`Error caught by playNextAyahInSurah for Ayah ${ayahData.numberInSurah} (Global: ${ayahData.number}). isSurahPlaying: ${isSurahPlaying}. Error: ${error.message || error}`);
         if (isSurahPlaying) { 
             currentPlayingAyahInfo.textContent = `خطأ في الآية ${ayahData.numberInSurah}, محاولة الانتقال للتالية...`;
             currentSurahAyahIdx++; 
@@ -711,12 +757,9 @@
         }
     }
 
-    // This ontimeupdate should ideally be set once globally or managed carefully.
-    // If set here, it might conflict if another audio starts playing outside surah sequence.
     globalAudioPlayer.ontimeupdate = () => {
         if (globalAudioPlayer.duration && surahAyahsDataForView.length > 0 && isSurahPlaying) {
             const currentAyahProgress = globalAudioPlayer.currentTime / globalAudioPlayer.duration;
-            // Ensure currentSurahAyahIdx is within bounds for progress calculation
             const validCurrentSurahAyahIdx = Math.min(currentSurahAyahIdx, surahAyahsDataForView.length - 1);
             const overallProgress = ((validCurrentSurahAyahIdx + currentAyahProgress) / surahAyahsDataForView.length) * 100;
             
@@ -729,13 +772,12 @@
   document.getElementById('playPauseSurahBtn').addEventListener('click', () => {
     if (surahAyahsDataForView.length === 0) return;
     
-    if (isSurahPlaying) { // User wants to pause
+    if (isSurahPlaying) { 
         isSurahPlaying = false;
-        globalAudioPlayer.pause(); // Pause the audio
+        globalAudioPlayer.pause(); 
         currentPlayingAyahInfo.textContent = "التلاوة متوقفة مؤقتاً";
-    } else { // User wants to play (or resume)
+    } else { 
         isSurahPlaying = true;
-        // Check if we can resume current audio or start the sequence
         if (globalAudioPlayer.paused && globalAudioPlayer.src && 
             currentPlayingAyahGlobalNumber === surahAyahsDataForView[currentSurahAyahIdx]?.number) {
             
@@ -745,12 +787,10 @@
                     console.error("Resume error:", err);
                     isSurahPlaying = false; 
                     currentPlayingAyahInfo.textContent = "خطأ عند استئناف التلاوة.";
-                    updateSurahPlayPauseIcons(); // Correct icon if resume fails
+                    updateSurahPlayPauseIcons(); 
                 });
             }
         } else {
-            // If not resuming (e.g., different ayah, or src is empty), play the sequence.
-            // currentSurahAyahIdx should already be at the correct point (either start or where it was left/seeked)
             playNextAyahInSurah();
         }
     }
@@ -760,11 +800,9 @@
   document.getElementById('surahSeekSlider').addEventListener('input', (e) => {
       if (surahAyahsDataForView.length === 0) return;
       
-      const كان_يشغل = isSurahPlaying; // Store current playing state
-      isSurahPlaying = false; // Temporarily pause to handle seek
-      globalAudioPlayer.pause();
-      if (globalAudioPlayer.src) globalAudioPlayer.src = ""; 
-
+      const wasPlaying = isSurahPlaying; 
+      isSurahPlaying = false; 
+      stopAudio(); 
 
       const seekPercentage = parseFloat(e.target.value);
       const targetAyahAbsoluteIdx = (seekPercentage / 100) * surahAyahsDataForView.length;
@@ -775,24 +813,23 @@
 
       currentSurahAyahIdx = newAyahIdx;
       
-      // Update highlight for the seeked Ayah
       if(currentPlayingAyahElement) currentPlayingAyahElement.classList.remove('ayah-highlight-active');
       const ayahDataSeeked = surahAyahsDataForView[currentSurahAyahIdx];
       if (ayahDataSeeked) {
           const ayahElement = document.getElementById(ayahDataSeeked.elementId);
           if (ayahElement) {
               ayahElement.classList.add('ayah-highlight-active');
-              currentPlayingAyahElement = ayahElement; // Update current element for highlighting
+              currentPlayingAyahElement = ayahElement; 
           }
           currentPlayingAyahInfo.textContent = `متوقف عند: ${surahViewTitle.textContent} - الآية ${ayahDataSeeked.numberInSurah}`;
       }
       surahProgressBar.style.width = `${seekPercentage}%`;
 
-      if (كان_يشغل) { // If it was playing before seek, resume playing from new spot
+      if (wasPlaying) { 
           isSurahPlaying = true;
           playNextAyahInSurah();
       }
-      updateSurahPlayPauseIcons(); // Update icons based on the final state of isSurahPlaying
+      updateSurahPlayPauseIcons(); 
   });
 
   loadQuran();
