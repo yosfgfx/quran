@@ -1,243 +1,123 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>بحث مباشر في القرآن الكريم</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            yousef: ['Yousef', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400&display=swap');
-    
-body {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
-  padding: 40px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #f0f0f5;
-  min-height: 100vh;
-  margin: 0;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-h1 {
-  text-align: center;
-  font-weight: 900;
-  font-size: 3rem;
-  margin-bottom: 30px;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-  letter-spacing: 2px;
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
-}
-
-input[type="text"] {
-  display: block;
-  margin: 0 auto 40px auto;
-  width: 90%;
-  max-width: 600px;
-  padding: 18px 25px;
-  font-size: 1.3rem;
-  border: none;
-  border-radius: 50px;
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  box-shadow: 0 8px 32px 0 rgba(103, 58, 183, 0.4);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  transition: background 0.3s ease;
-}
-
-input[type="text"]::placeholder {
-  color: #e0d9f7;
-  font-style: italic;
-}
-
-input[type="text"]:focus {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 12px 48px 0 rgba(103, 58, 183, 0.7);
-}
-
-#results {
-  max-width: 900px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-  gap: 25px;
-  padding-bottom: 60px;
-  position: relative;
-  z-index: 1;
-}
-
-.result {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 25px;
-  box-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.37),
-    inset 0 0 20px 1px rgba(255, 255, 255, 0.18);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  padding: 25px 30px;
-  color: #fff;
-  cursor: pointer;
-  transition:
-    transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
-  overflow-wrap: break-word;
-  box-sizing: border-box;
-  -webkit-user-select: text;
-  user-select: text;
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.result:hover {
-  transform: translateY(-10px);
-  box-shadow:
-    0 20px 40px rgba(103, 58, 183, 0.6),
-    inset 0 0 25px 2px rgba(255, 255, 255, 0.25);
-}
-
-.surah-name {
-  font-weight: 700;
-  font-size: 1.4rem;
-  margin-bottom: 15px;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
-}
-
-.ayah-text {
-  font-size: 1.15rem;
-  line-height: 1.5;
-  color: #e8def8;
-  flex-grow: 1;
-  -webkit-user-select: text;
-  user-select: text;
-}
-
-mark {
-  background: #ffd54f;
-  color: #2c2c2c;
-  font-weight: 700;
-  padding: 0 5px;
-  border-radius: 6px;
-  box-shadow: 0 0 8px #ffd54faa;
-  transition: background 0.3s ease;
-}
-
-mark:hover {
-  background: #ffca28;
-  box-shadow: 0 0 12px #ffca28dd;
-}
-
-/* Overlay modal style for expanded card */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.65);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.expanded-card {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 30px;
-  box-shadow:
-    0 16px 48px rgba(103, 58, 183, 0.7),
-    inset 0 0 40px 4px rgba(255, 255, 255, 0.25);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  padding: 40px 60px;
-  color: #fff;
-  max-width: 700px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-sizing: border-box;
-  position: relative;
-  -webkit-user-select: text;
-  user-select: text;
-  cursor: default;
-  text-align: right;
-  font-size: 1.3rem;
-  line-height: 1.6;
-  font-weight: 600;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.expanded-card .surah-name {
-  font-size: 1.9rem;
-  margin-bottom: 25px;
-  text-shadow: 0 0 12px rgba(255,255,255,0.7);
-}
-
-.expanded-card .ayah-text {
-  font-size: 1.35rem;
-  line-height: 1.8;
-  color: #f0e9ff;
-}
-
-.close-btn {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 2.4rem;
-  cursor: pointer;
-  font-weight: 900;
-  transition: color 0.25s ease;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.close-btn:hover {
-  color: #ffd54f;
-}
-
-/* Summary style */
-#results > p:first-child {
-  grid-column: 1 / -1;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fdd835;
-  margin-bottom: 15px;
-  text-align: center;
-  text-shadow: 0 0 10px #fdd835bb;
-}
+    @font-face {
+      font-family: 'Yousef';
+      src: url('./yousef-regular.woff2') format('woff2'),
+           url('./yousef-regular.woff') format('woff'),
+           url('./yousef-regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Yousef';
+      src: url('./yousef-Bold.woff2') format('woff2'),
+           url('./yousef-Bold.woff') format('woff'),
+           url('./yousef-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    body {
+      font-family: 'Yousef', sans-serif;
+    }
+    h1 {
+      font-weight: 700;
+    }
+    .overlay {
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(0,0,0,0.5);
+    }
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .result {
+      background: rgba(255, 255, 255, 0.6);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .result:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    #loadingMsg::after {
+      content: '';
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid #ccc;
+      border-top-color: #333;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: .5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .expanded-card {
+      background: rgba(255, 255, 255, 0.8);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .close-btn {
+      position: absolute;
+      top: .5rem;
+      left: .5rem;
+      background: transparent;
+      border: none;
+      font-size: 1.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
   </style>
 </head>
-<body>
-
-<h1>بحث مباشر في القرآن الكريم</h1>
-<input type="text" id="searchInput" placeholder="اكتب كلمة أو حرف للبحث..." autocomplete="off" />
-
-<div id="results"><p class="loading">...جار تحميل كامل القرآن، انتظر قليلاً</p></div>
-
-<div id="overlay" class="overlay" tabindex="-1" aria-hidden="true">
-  <div id="expandedCard" class="expanded-card" role="dialog" aria-modal="true" aria-labelledby="expandedSurahName" aria-describedby="expandedAyahText" tabindex="0">
-    <button id="closeBtn" class="close-btn" aria-label="إغلاق">&times;</button>
-    <h2 id="expandedSurahName" class="surah-name"></h2>
-    <p id="expandedAyahText" class="ayah-text"></p>
+<body class="bg-gradient-to-br from-neutral-100 to-neutral-200 text-gray-900 min-h-screen p-6 font-yousef">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl mb-6 text-center font-bold">بحث مباشر في القرآن الكريم</h1>
+    <div class="flex items-center gap-4 mb-4 justify-center">
+      <label for="fontSize" class="font-bold">حجم الخط</label>
+      <input type="range" id="fontSize" min="16" max="28" value="18" class="w-40">
+    </div>
+    <input type="text" id="searchInput" placeholder="اكتب كلمة أو حرف للبحث..." autocomplete="off" class="w-full max-w-xl mx-auto block mb-8 rounded-full border border-gray-300 bg-white/70 py-3 px-6 text-lg focus:bg-white focus:outline-none backdrop-blur-md" />
+    <div id="results" class="grid gap-6"><p id="loadingMsg">...جار تحميل القرآن</p></div>
   </div>
-</div>
+
+  <div id="overlay" class="overlay fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity" tabindex="-1" aria-hidden="true">
+    <div id="expandedCard" class="expanded-card relative w-[90%] max-w-xl" role="dialog" aria-modal="true" aria-labelledby="expandedSurahName" aria-describedby="expandedAyahText" tabindex="0">
+      <button id="closeBtn" class="close-btn" aria-label="إغلاق">&times;</button>
+      <h2 id="expandedSurahName" class="surah-name mb-4 text-xl font-bold"></h2>
+      <p id="expandedAyahText" class="ayah-text text-lg leading-relaxed"></p>
+      <audio id="player" class="w-full mt-4" controls></audio>
+      <button id="copyBtn" class="mt-4 px-4 py-2 rounded bg-blue-600 text-white">نسخ الآية</button>
+    </div>
+  </div>
 
 <script>
   const searchInput = document.getElementById('searchInput');
@@ -247,6 +127,7 @@ mark:hover {
   // تحميل كامل القرآن مرة واحدة عند فتح الصفحة
   async function loadQuran() {
     try {
+      resultsDiv.innerHTML = '<p id="loadingMsg">...جار تحميل القرآن</p>';
       const response = await fetch('https://api.alquran.cloud/v1/quran/ar.asad');
       const data = await response.json();
 
@@ -262,11 +143,14 @@ mark:hover {
           allAyahs.push({
             surahName: surah.name,
             numberInSurah: ayah.numberInSurah,
+            id: ayah.number,
             text: ayah.text
           });
         });
       });
 
+      const loading = document.getElementById('loadingMsg');
+      if (loading) loading.remove();
       resultsDiv.innerHTML = '<p>تم تحميل القرآن بالكامل. ابدأ بالبحث!</p>';
     } catch (error) {
       resultsDiv.innerHTML = '<p>حدث خطأ أثناء تحميل القرآن.</p>';
@@ -309,8 +193,8 @@ mark:hover {
     let html = '';
     results.forEach(ayah => {
       html += `
-        <div class="result">
-          <div class="surah-name">${ayah.surahName} - آية رقم ${ayah.numberInSurah}</div>
+        <div class="result" data-id="${ayah.id}">
+          <div class="surah-name font-bold mb-2">${ayah.surahName} - آية رقم ${ayah.numberInSurah}</div>
           <div class="ayah-text">${highlight(ayah.text, query)}</div>
         </div>
       `;
@@ -335,18 +219,35 @@ mark:hover {
   const closeBtn = document.getElementById('closeBtn');
   const expandedSurahName = document.getElementById('expandedSurahName');
   const expandedAyahText = document.getElementById('expandedAyahText');
+  const playerEl = document.getElementById('player');
+  const audioPlayer = playerEl;
+  const fontSizeInput = document.getElementById('fontSize');
+  const copyBtn = document.getElementById('copyBtn');
+
+  fontSizeInput.addEventListener('input', () => {
+    document.documentElement.style.fontSize = fontSizeInput.value + 'px';
+  });
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(expandedAyahText.textContent);
+  });
 
   // دالة فتح البطاقة المكبرة
-  function openExpandedCard(surahName, ayahText) {
+  function openExpandedCard(surahName, ayahText, verseId) {
     expandedSurahName.textContent = surahName;
     expandedAyahText.innerHTML = ayahText;
     overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+    audioPlayer.src = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${verseId}.mp3`;
+    audioPlayer.load();
     expandedCard.focus();
   }
 
   // إغلاق البطاقة
   function closeExpandedCard() {
     overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+    audioPlayer.pause();
     expandedSurahName.textContent = '';
     expandedAyahText.textContent = '';
     searchInput.focus();
@@ -360,6 +261,12 @@ mark:hover {
     if (e.target === overlay) closeExpandedCard();
   });
 
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      closeExpandedCard();
+    }
+  });
+
   // إضافة أحداث للبطاقات المفتوحة عند توليدها
   function addCardClickEvents() {
     const cards = document.querySelectorAll('.result');
@@ -367,12 +274,12 @@ mark:hover {
       card.addEventListener('click', () => {
         openExpandedCard(
           card.querySelector('.surah-name').textContent,
-          card.querySelector('.ayah-text').innerHTML
+          card.querySelector('.ayah-text').innerHTML,
+          card.dataset.id
         );
       });
     });
   }
 </script>
-
 </body>
 </html>
