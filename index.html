@@ -3,7 +3,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>القرآن الكريم</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-32x32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/icon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/icon-128x128.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-256x256.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="yosfgfx.github.io/quran/"> <!-- استبدل هذا برابط موقعك الفعلي -->
+  <meta property="og:title" content="القرآن الكريم - إِنْ هُوَ إِلَّا وَحْيٌ يُوحَى"> <!-- عنوان جذاب يظهر عند المشاركة -->
+  <meta property="og:description" content="ابحث في آيات القرآن الكريم واستمع إليها. موقع متكامل لتصفح وقراءة القرآن الكريم مع ميزات بحث متقدمة واستماع للآيات."> <!-- وصف موجز للموقع -->
+  <meta property="og:image" content="yosfgfx.github.io/quran/meta.jpeg"> <!-- المسار الكامل لصورة meta.jpeg -->
+  <meta property="og:image:width" content="1200"> <!-- العرض الموصى به للصورة -->
+  <meta property="og:image:height" content="630"> <!-- الارتفاع الموصى به للصورة -->
+  <meta property="og:locale" content="ar_AR"> <!-- لغة الموقع -->
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"> <!-- نوع البطاقة (صورة كبيرة) -->
+  <meta name="twitter:url" content="yosfgfx.github.io/quran/"> <!-- استبدل هذا برابط موقعك الفعلي -->
+  <meta name="twitter:title" content="القرآن الكريم - إِنْ هُوَ إِلَّا وَحْيٌ يُوحَى">
+  <meta name="twitter:description" content="ابحث في آيات القرآن الكريم واستمع إليها. موقع متكامل لتصفح وقراءة القرآن الكريم.">
+  <meta name="twitter:image" content="https://yosfgfx.github.io/quran/meta.jpeg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,14 +86,15 @@
     #animatedInstructionText {
       font-weight: 400;
       font-family: 'Yousef';
-      font-size: 1.3rem;
+      font-size: 1rem;
       line-height: 1.7;
+      text-align: center;
       position: relative;
       background: linear-gradient(
         270deg,
         rgba(203, 213, 225, 0.2) 0%,
         rgba(226, 232, 240, 0.6) 25%,
-        #f1f5f9 50%,
+        #f1f5f990 50%,
         rgba(226, 232, 240, 0.6) 75%,
         rgba(203, 213, 225, 0.2) 100%
       );
@@ -163,12 +184,48 @@
      #voiceSearchBtn:hover svg:not(.recording) {
       color: #f59e0b; /* Amber-500 for hover */
     }
+/* ----- بداية كود حركة صورة القرآن ----- */
+#animatedQuranImageContainer {
+  position: absolute; /* لتتموضع خلف العناصر الأخرى */
+  top: 70px; /* تعديل لرفع الصورة فوق العنوان الرئيسي. اضبط هذه القيمة حسب الحاجة */
+  left: 50%;
+  transform: translateX(-50%); /* لتوسيط الصورة أفقياً */
+  z-index: 0; /* لجعلها خلف العناصر الأخرى ذات z-index أعلى */
+  width: 200px; /* اضبط عرض الصورة حسب الحاجة */
+  height: auto; /* للحفاظ على نسبة العرض إلى الارتفاع */
+  animation: floatAnimation 6s ease-in-out infinite;
+  opacity: 0.3; /* يمكنك تعديل درجة الشفافية هنا */
+}
+
+#animatedQuranImageContainer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes floatAnimation {
+  0% {
+    transform: translate(-50%, 0px);
+  }
+  50% {
+    transform: translate(-50%, -10px); /* زيادة طفيفة في الحركة لتكون 10px إجمالاً (5px لأعلى و 5px لأسفل) */
+  }
+  100% {
+    transform: translate(-50%, 0px);
+  }
+}
+/* ----- نهاية كود حركة صورة القرآن ----- */
+
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 to-slate-950 text-slate-300 min-h-screen antialiased custom-scrollbar flex flex-col">
-
+<body class="bg-gradient-to-br from-slate-900 to-slate-950 text-slate-300 min-h-screen antialiased custom-scrollbar pt-28 sm:pt-32 pb-12 flex flex-col">
+<!-- حاوية صورة القرآن المتحركة -->
+<div id="animatedQuranImageContainer">
+  <img src="quran.png" alt="صورة قرآن مزخرفة">
+</div>
 <!-- Hero/Search Section -->
-<section class="flex flex-col items-center justify-start w-full pt-20 sm:pt-24 pb-12">
+<section class="flex flex-col items-center justify-start w-full pt-28 sm:pt-32 pb-12 relative z-10"> 
+  <!--                                                       ^^^^^^^^^^^^^^ تم زيادة هذه القيم -->
   <div class="w-full max-w-3xl mx-auto text-center px-4">
     <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-amber-400 mb-5 tracking-tight">
       إِنْ هُوَ إِلَّا وَحْيٌ يُوحَى
