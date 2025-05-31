@@ -3792,7 +3792,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // استخدام fetch الأصلي لكل الطلبات الأخرى
     return originalFetch(url, options);
   };
-})();
+})()
       // اعتراض طلبات fetch
       window.fetch = function(url, options) {
         // تحويل URL إلى كائن إذا كانت سلسلة نصية
