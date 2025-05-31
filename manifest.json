@@ -1,0 +1,48 @@
+{
+  "name": "القرآن الكريم",
+  "short_name": "القرآن",
+  "description": "تطبيق القرآن الكريم للقراءة والاستماع بدون اتصال بالإنترنت",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/quran.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/quran.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "البحث في القرآن",
+      "url": "/?section=search",
+      "description": "البحث في آيات القرآن الكريم"
+    },
+    {
+      "name": "تصفح السور",
+      "url": "/?section=browse",
+      "description": "تصفح سور القرآن الكريم"
+    }
+  ],
+  "categories": ["books", "education", "religious"],
+  "lang": "ar-SA",
+  "dir": "rtl",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "screenshots": [],
+  "features": [
+    "القراءة بدون اتصال بالإنترنت",
+    "الاستماع للتلاوات",
+    "البحث المتقدم في الآيات",
+    "تصفح السور والآيات"
+  ]
+} 

@@ -1,0 +1,74 @@
+{
+  "reciters": [
+    {
+      "id": "1",
+      "name": "عبد الباسط عبد الصمد",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/abdul_basit_murattal/{surah_number}.mp3"
+    },
+    {
+      "id": "2",
+      "name": "محمود خليل الحصري",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_murattal/{surah_number}.mp3"
+    },
+    {
+      "id": "3",
+      "name": "محمد صديق المنشاوي",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/muhammad_siddeeq_al-minshaawee/{surah_number}.mp3"
+    },
+    {
+      "id": "4",
+      "name": "مشاري راشد العفاسي",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/{surah_number}.mp3"
+    },
+    {
+      "id": "5",
+      "name": "سعد الغامدي",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/sa3d_al-ghaamidi/{surah_number}.mp3"
+    },
+    {
+      "id": "6",
+      "name": "هاني الرفاعي",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/hani_ar-rifai/{surah_number}.mp3"
+    },
+    {
+      "id": "7",
+      "name": "ماهر المعيقلي",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/maher_al_muaiqly/{surah_number}.mp3"
+    },
+    {
+      "id": "8",
+      "name": "عبد الرحمن السديس",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/abdurrahmaan_as-sudays/{surah_number}.mp3"
+    },
+    {
+      "id": "9",
+      "name": "سعود الشريم",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/sa3ood_ash-shuraym/{surah_number}.mp3"
+    },
+    {
+      "id": "10",
+      "name": "أحمد العجمي",
+      "style": "مرتل",
+      "language": "العربية",
+      "audio_url_format": "https://download.quranicaudio.com/quran/ahmed_ibn_3ali_al-3ajamy/{surah_number}.mp3"
+    }
+  ]
+} 

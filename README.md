@@ -1,8 +1,231 @@
-# Quran Search
+# تطبيق القرآن الكريم المحسّن 📖
 
-This is a small static page that loads the Quran using the [alquran.cloud](https://alquran.cloud) API and allows instant search in Arabic. Open `index.html` in a browser to use.
+تطبيق ويب شامل للقرآن الكريم مع ميزات البحث الذكي باستخدام الذكاء الاصطناعي، الأذكار والأدعية، مواقيت الصلاة، والمزيد من الميزات المتقدمة.
 
-## Fonts
+## ✨ الميزات الرئيسية
 
-The page uses the custom **Yousef** font family (regular and bold). These fonts are bundled in the repository. They were released for free distribution; see their source for full licensing information.
+### 🔍 البحث المتقدم
+- **البحث الذكي** باستخدام Gemini 2.0 Flash
+- **تصحيح الأخطاء الإملائية** تلقائياً
+- **البحث بالمعنى** - ابحث عن آية بوصف معناها
+- **البحث الصوتي** باللغة العربية
+- **البحث الجزئي** - ابحث بجزء من الآية
+- **قائمة منسدلة** للنتائج في الوقت الفعلي
 
+### 📚 تصفح القرآن
+- **تصفح السور** بتصميم أنيق ومرتب
+- **تصنيف السور** (مكية/مدنية)
+- **عرض تفصيلي** لكل سورة مع إمكانية التشغيل
+- **Lazy Loading** لتحسين الأداء
+
+### 🎵 التلاوة والاستماع
+- **قراء متعددون** مع ماهر المعيقلي كافتراضي
+- **تشغيل الآيات المفردة** أو السور كاملة
+- **شريط تقدم** وإمكانية التحكم في التشغيل
+- **جودة صوت عالية** (128 kbps)
+
+### 🤲 الأذكار والأدعية
+- **أذكار الصباح والمساء**
+- **أذكار النوم**
+- **أدعية مأثورة** من القرآن والسنة
+- **أدعية الأنبياء**
+- **أدعية قرآنية**
+
+### 🕌 مواقيت الصلاة
+- **أوقات الصلاة** حسب الموقع الجغرافي
+- **تحديث تلقائي** للمواقيت
+- **عرض أنيق** ومنظم للأوقات
+
+### ⚙️ الإعدادات والتخصيص
+- **اختيار القارئ** من قائمة شاملة
+- **التحكم في مستوى الصوت**
+- **أحجام خطوط متعددة**
+- **الوضع الليلي**
+- **التشغيل التلقائي**
+
+## 🚀 التثبيت والتشغيل
+
+### المتطلبات
+- Node.js (الإصدار 14 أو أحدث)
+- npm أو yarn
+- مفتاح Gemini API من Google AI Studio
+
+### خطوات التثبيت
+
+1. **استنساخ المشروع**
+```bash
+git clone https://github.com/yourusername/quran-app-enhanced.git
+cd quran-app-enhanced
+```
+
+2. **تثبيت التبعيات**
+```bash
+npm install
+```
+
+3. **إعداد متغيرات البيئة**
+```bash
+cp .env.example .env
+```
+
+4. **تحرير ملف .env**
+```bash
+# احصل على مفاتيح API من https://aistudio.google.com/app/apikey
+GEMINI_API_KEY_1=your_actual_gemini_api_key_1
+GEMINI_API_KEY_2=your_actual_gemini_api_key_2
+GEMINI_API_KEY_3=your_actual_gemini_api_key_3
+GEMINI_API_KEY_4=your_actual_gemini_api_key_4
+GEMINI_API_KEY_5=your_actual_gemini_api_key_5
+
+# الفهرس النشط (0-4)
+ACTIVE_GEMINI_KEY_INDEX=0
+```
+
+5. **تشغيل التطبيق**
+```bash
+# للتطوير
+npm run dev
+
+# للإنتاج
+npm start
+```
+
+6. **فتح التطبيق**
+افتح المتصفح على: `http://localhost:3000`
+
+## 🔧 إعداد مفاتيح Gemini API
+
+1. **إنشاء حساب Google AI Studio**
+   - اذهب إلى [Google AI Studio](https://aistudio.google.com/)
+   - سجل دخولك بحساب Google
+
+2. **الحصول على مفتاح API**
+   - اذهب إلى [API Keys](https://aistudio.google.com/app/apikey)
+   - انقر على "Create API Key"
+   - انسخ المفتاح
+
+3. **إضافة المفاتيح لملف .env**
+   - يمكنك إضافة حتى 5 مفاتيح
+   - التطبيق سيتبديل بينها تلقائياً عند الحاجة
+
+## 📱 استخدام التطبيق
+
+### البحث الأساسي
+- اكتب كلمة أو جملة في مربع البحث
+- سيتم عرض النتائج في الوقت الفعلي
+
+### البحث الذكي
+- فعّل خيار "البحث الذكي"
+- يمكنك البحث بـ:
+  - **أخطاء إملائية**: "الصلاه" → "الصلاة"
+  - **المعنى**: "آية الكرسي" → سورة البقرة آية 255
+  - **جزء من آية**: "قل هو الله" → سورة الإخلاص
+  - **وصف المحتوى**: "آية عن الصبر"
+
+### البحث الصوتي
+- انقر على أيقونة الميكروفون
+- اسمح بالوصول للميكروفون
+- تحدث بوضوح باللغة العربية
+
+### تشغيل التلاوة
+- انقر على زر "استمع" بجانب أي آية
+- اختر القارئ المفضل من الإعدادات
+- تحكم في مستوى الصوت
+
+## 🛠️ التطوير والمساهمة
+
+### بنية المشروع
+```
+quran-app-enhanced/
+├── index.html          # الواجهة الرئيسية
+├── server.js           # خادم Express.js
+├── package.json        # تبعيات المشروع
+├── .env.example        # مثال لمتغيرات البيئة
+├── .env               # متغيرات البيئة (لا تُرفع للـ Git)
+└── README.md          # هذا الملف
+```
+
+### APIs المستخدمة
+- **Al-Quran Cloud API**: للنصوص والصوتيات
+- **AlQuran.vip API**: للأذكار والأدعية ومواقيت الصلاة
+- **Google Gemini 2.0 Flash**: للبحث الذكي
+- **Web Speech API**: للبحث الصوتي
+
+### إضافة ميزات جديدة
+1. Fork المشروع
+2. إنشاء branch جديد: `git checkout -b feature/amazing-feature`
+3. Commit التغييرات: `git commit -m 'Add amazing feature'`
+4. Push للـ branch: `git push origin feature/amazing-feature`
+5. فتح Pull Request
+
+## 🐛 استكشاف الأخطاء
+
+### مشاكل شائعة وحلولها
+
+**1. خطأ في تحميل القرآن**
+```bash
+# تأكد من الاتصال بالإنترنت
+curl -I https://api.alquran.cloud/v1/quran/ar.quran-uthmani
+```
+
+**2. البحث الذكي لا يعمل**
+- تأكد من صحة مفاتيح Gemini API في ملف `.env`
+- تحقق من حالة الخادم: `http://localhost:3000/api/health`
+
+**3. الصوتيات لا تعمل**
+- تأكد من تشغيل الخادم
+- جرب قارئ آخر من الإعدادات
+- تحقق من إعدادات الصوت في المتصفح
+
+**4. البحث الصوتي لا يعمل**
+- اسمح بالوصول للميكروفون
+- استخدم HTTPS أو localhost
+- تأكد من دعم المتصفح للـ Speech API
+
+## 📊 الأداء والتحسين
+
+### تحسينات مطبقة
+- **Lazy Loading** للسور والمحتوى
+- **Debouncing** لتجنب الطلبات المتكررة
+- **Caching** للنتائج المتكررة
+- **تدوير مفاتيح API** لتجنب حدود الاستخدام
+
+### متطلبات النظام
+- **RAM**: 512 MB كحد أدنى
+- **Storage**: 100 MB مساحة حرة
+- **Network**: اتصال إنترنت مستقر
+
+## 🔒 الأمان والخصوصية
+
+- **مفاتيح API** محمية في متغيرات البيئة
+- **لا يتم تخزين** بيانات المستخدم
+- **HTTPS** موصى به للإنتاج
+- **CORS** مُكوّن بشكل آمن
+
+## 📄 الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT - انظر ملف [LICENSE](LICENSE) للتفاصيل.
+
+## 🤝 الشكر والتقدير
+
+- **Al-Quran Cloud** لـ API النصوص والصوتيات
+- **AlQuran.vip** لـ API الأذكار والأدعية
+- **Google** لـ Gemini AI
+- **جميع المساهمين** في هذا المشروع
+
+## 📞 التواصل والدعم
+
+- **GitHub Issues**: [رفع مشكلة](https://github.com/yosfgfx/quran-app-enhanced/issues)
+- **Email**: yosfgfx@gmail.com
+- **Twitter**: [@yosfgfx](https://twitter.com/yosfgfx)
+
+---
+
+**مُطوّر بـ ❤️ لخدمة كتاب الله الكريم**
+
+## 📚 مزيد من الوثائق
+
+- [دليل المطور](docs/developer-guide.md)
+- [API Reference](docs/api-reference.md)
+- [أمثلة الاستخدام](docs/examples.md)
+- [الأسئلة الشائعة](docs/faq.md)

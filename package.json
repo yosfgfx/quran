@@ -1,0 +1,47 @@
+{
+  "name": "quran-app-enhanced",
+  "version": "2.0.0",
+  "description": "تطبيق القرآن الكريم الشامل مع البحث الذكي والميزات المتقدمة",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "setup": "npm install && echo '✅ التثبيت مكتمل! قم بتحرير ملف .env ثم شغل: npm start'",
+    "quick-start": "npm run setup && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "echo 'لا توجد قواعد linting محددة حالياً'",
+    "clean": "rm -rf node_modules package-lock.json && npm install"
+  },
+  "keywords": [
+    "quran",
+    "islamic",
+    "arabic",
+    "ai-search",
+    "gemini",
+    "prayer-times",
+    "athkar",
+    "recitation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/quran-app-enhanced.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/quran-app-enhanced/issues"
+  },
+  "homepage": "https://github.com/yourusername/quran-app-enhanced#readme"
+}
