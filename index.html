@@ -273,12 +273,19 @@
     
     /* أنماط بطاقات الأذكار */
     .zikr-card {
+      background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(71, 85, 105, 0.6) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 1rem;
+      padding: 1.5rem;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
+
     
     .zikr-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(245, 158, 11, 0.5);
     }
     
     /* أنماط لبطاقات نتائج البحث */
@@ -976,7 +983,6 @@
               if (initialMessage) {
                 initialMessage.innerHTML = '<p class="text-green-400">تم تحميل البيانات بنجاح</p>';
                 setTimeout(() => {
-                  initialMessage.innerHTML = '<p class="text-slate-400">ابحث في آيات القرآن الكريم</p>';
                 }, 1500);
               }
               
@@ -1026,7 +1032,6 @@
               if (initialMessage) {
                 initialMessage.innerHTML = '<p class="text-green-400">تم تحميل البيانات بنجاح</p>';
                 setTimeout(() => {
-                  initialMessage.innerHTML = '<p class="text-slate-400">ابحث في آيات القرآن الكريم...</p>';
                 }, 1500);
               }
               
@@ -1082,7 +1087,6 @@
           if (initialMessage) {
             initialMessage.innerHTML = '<p class="text-green-400">تم تحميل البيانات بنجاح</p>';
             setTimeout(() => {
-              initialMessage.innerHTML = '<p class="text-slate-400">ابحث في آيات القرآن الكريم...</p>';
             }, 1500);
           }
           
@@ -1175,7 +1179,6 @@
               if (initialMessage) {
                 initialMessage.innerHTML = '<p class="text-green-400">تم تحميل البيانات بنجاح</p>';
                 setTimeout(() => {
-                  initialMessage.innerHTML = '<p class="text-slate-400">ابحث في آيات القرآن الكريم...</p>';
                 }, 1500);
               }
               
@@ -2799,105 +2802,128 @@
         });
       }
     }
-    
     // تطبيق إعدادات حجم الخط
-    function applyFontSizeSettings() {
-      const fontSizeSelector = document.getElementById('fontSizeSelector');
-      if (fontSizeSelector) {
-        applyFontSize(fontSizeSelector.value);
-      }
+function applyFontSizeSettings() {
+  const fontSizeSelector = document.getElementById('fontSizeSelector');
+  if (fontSizeSelector) {
+    applyFontSize(fontSizeSelector.value);
+  }
+}
+
+// تطبيق حجم الخط المحدد
+function applyFontSize(size) {
+  const quranFont = document.querySelectorAll('.font-quran');
+  const quranFontSm = document.querySelectorAll('.font-quran-sm');
+
+  // ملاحظة: لتحسين أكبر، يمكن استخدام متغيرات CSS (CSS Custom Properties)
+  // لتغيير حجم الخط. مثال:
+  // document.documentElement.style.setProperty('--font-quran-base-size', '1.7rem');
+  // وفي CSS: .font-quran { font-size: clamp(var(--font-quran-base-size), ...); }
+  // هذا يجعل الكود هنا أبسط، لكن يتطلب تعديل CSS.
+
+  let quranBaseSize, quranSmBaseSize;
+
+  switch(size) {
+    case 'small':
+      quranBaseSize = { min: '1.5rem', preferred: '4vw', max: '1.9rem' };
+      quranSmBaseSize = { min: '1.1rem', preferred: '3.5vw', max: '1.4rem' };
+      break;
+    case 'medium':
+      quranBaseSize = { min: '1.7rem', preferred: '4.5vw', max: '2.1rem' };
+      quranSmBaseSize = { min: '1.3rem', preferred: '4vw', max: '1.6rem' };
+      break;
+    case 'large':
+      quranBaseSize = { min: '1.9rem', preferred: '5vw', max: '2.3rem' };
+      quranSmBaseSize = { min: '1.5rem', preferred: '4.5vw', max: '1.8rem' };
+      break;
+    case 'xlarge':
+      quranBaseSize = { min: '2.1rem', preferred: '5.5vw', max: '2.5rem' };
+      quranSmBaseSize = { min: '1.7rem', preferred: '5vw', max: '2rem' };
+      break;
+    default: // كحالة افتراضية أو إذا كانت القيمة غير متوقعة
+      quranBaseSize = { min: '1.7rem', preferred: '4.5vw', max: '2.1rem' }; // Medium
+      quranSmBaseSize = { min: '1.3rem', preferred: '4vw', max: '1.6rem' }; // Medium
+  }
+
+  quranFont.forEach(el => el.style.fontSize = `clamp(${quranBaseSize.min}, ${quranBaseSize.preferred}, ${quranBaseSize.max})`);
+  quranFontSm.forEach(el => el.style.fontSize = `clamp(${quranSmBaseSize.min}, ${quranSmBaseSize.preferred}, ${quranSmBaseSize.max})`);
+}
+
+// تطبيق السمة (داكنة أو فاتحة) - نسخة محسنة
+function setTheme(isDark = true) {
+  const body = document.body;
+  const root = document.documentElement; // للوصول إلى :root إذا استخدمت متغيرات CSS
+
+  if (isDark) {
+    body.classList.add('dark-theme');
+    body.classList.remove('light-theme');
+    // يمكنك أيضًا تعيين متغيرات CSS هنا إذا كنت تستخدمها بشكل مكثف
+    // root.style.setProperty('--primary-bg-color', '#0f172a');
+    // root.style.setProperty('--primary-text-color', '#cbd5e1');
+    // body.style.background و body.style.color يمكن أن تبقى هنا أو تنتقل بالكامل لـ CSS
+    body.style.background = 'linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)';
+    body.style.color = '#cbd5e1';
+  } else {
+    body.classList.add('light-theme');
+    body.classList.remove('dark-theme');
+    // root.style.setProperty('--primary-bg-color', '#f8fafc');
+    // root.style.setProperty('--primary-text-color', '#334155');
+    body.style.background = 'linear-gradient(to bottom right, #f8fafc, #e2e8f0, #f8fafc)';
+    body.style.color = '#334155';
+
+    // لا حاجة لتحديث الألوان للعناصر الأخرى هنا عبر JavaScript.
+    // يجب أن يتم ذلك عبر CSS. مثال في CSS:
+    // body.light-theme .section-card {
+    //   background-color: rgba(255, 255, 255, 0.6);
+    //   border-color: rgba(203, 213, 225, 0.5);
+    // }
+    // body.light-theme .text-slate-400 { color: #64748b; }
+    // وهكذا لباقي العناصر التي تحتاج تغييرات في الوضع الفاتح.
+  }
+
+  // حفظ الإعداد في التخزين المحلي
+  localStorage.setItem('quran-app-dark-mode', isDark ? 'true' : 'false');
+}
+
+// حفظ إعدادات المستخدم
+async function saveUserSettings() {
+  // التحقق من وجود العناصر قبل محاولة الوصول إلى خصائصها
+  const darkModeElement = document.getElementById('darkMode');
+  const fontSizeSelectorElement = document.getElementById('fontSizeSelector');
+  const volumeSliderElement = document.getElementById('volumeSlider');
+  const autoPlayElement = document.getElementById('autoPlay');
+
+  const settings = {
+    // استخدم قيمة افتراضية إذا لم يتم العثور على العنصر أو كانت currentReciter غير معرفة
+    darkMode: darkModeElement ? darkModeElement.checked : true,
+    fontSize: fontSizeSelectorElement ? fontSizeSelectorElement.value : 'medium',
+    volume: volumeSliderElement ? volumeSliderElement.value : 80, // افترض أن 80 هو قيمة عددية
+    autoPlay: autoPlayElement ? autoPlayElement.checked : false,
+    reciter: typeof currentReciter !== 'undefined' ? currentReciter : 'ar.alafasy'
+  };
+
+  try {
+    // تأكد أن دالة saveToIndexedDB معرفة ومتاحة
+    if (typeof saveToIndexedDB === 'function') {
+      await saveToIndexedDB('settings', settings);
+      console.log('✅ تم حفظ إعدادات المستخدم في IndexedDB');
+    } else {
+      console.warn('⚠️ دالة saveToIndexedDB غير معرفة، سيتم استخدام localStorage فقط.');
+      throw new Error('IndexedDB save function not available.'); // للانتقال إلى catch
     }
-    
-    // تطبيق حجم الخط المحدد
-    function applyFontSize(size) {
-      const quranFont = document.querySelectorAll('.font-quran');
-      const quranFontSm = document.querySelectorAll('.font-quran-sm');
-      
-      switch(size) {
-        case 'small':
-          quranFont.forEach(el => el.style.fontSize = 'clamp(1.5rem, 4vw, 1.9rem)');
-          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.1rem, 3.5vw, 1.4rem)');
-          break;
-        case 'medium':
-          quranFont.forEach(el => el.style.fontSize = 'clamp(1.7rem, 4.5vw, 2.1rem)');
-          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.3rem, 4vw, 1.6rem)');
-          break;
-        case 'large':
-          quranFont.forEach(el => el.style.fontSize = 'clamp(1.9rem, 5vw, 2.3rem)');
-          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.5rem, 4.5vw, 1.8rem)');
-          break;
-        case 'xlarge':
-          quranFont.forEach(el => el.style.fontSize = 'clamp(2.1rem, 5.5vw, 2.5rem)');
-          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.7rem, 5vw, 2rem)');
-          break;
-      }
+  } catch (error) {
+    console.error('❌ خطأ في حفظ إعدادات المستخدم في IndexedDB أو الدالة غير متاحة:', error);
+    try {
+      localStorage.setItem('quran-app-settings', JSON.stringify(settings));
+      console.log('✅ تم حفظ إعدادات المستخدم في localStorage كاحتياطي');
+    } catch (localStorageError) {
+      console.error('❌ خطأ في حفظ إعدادات المستخدم في localStorage:', localStorageError);
     }
-    
-    // تطبيق السمة (داكنة أو فاتحة)
-    function setTheme(isDark = true) {
-      const body = document.body;
-      
-      if (isDark) {
-        body.classList.add('dark-theme');
-        body.classList.remove('light-theme');
-        body.style.background = 'linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)';
-        body.style.color = '#cbd5e1';
-      } else {
-        body.classList.add('light-theme');
-        body.classList.remove('dark-theme');
-        body.style.background = 'linear-gradient(to bottom right, #f8fafc, #e2e8f0, #f8fafc)';
-        body.style.color = '#334155';
-        
-        // تحديث الألوان للعناصر الأخرى في السمة الفاتحة
-        document.querySelectorAll('.section-card, .floating-nav, .surah-card').forEach(el => {
-          el.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
-          el.style.borderColor = 'rgba(203, 213, 225, 0.5)';
-        });
-        
-        document.querySelectorAll('.text-slate-400').forEach(el => {
-          el.style.color = '#64748b';
-        });
-        
-        document.querySelectorAll('.text-slate-300').forEach(el => {
-          el.style.color = '#475569';
-        });
-        
-        document.querySelectorAll('.text-slate-200').forEach(el => {
-          el.style.color = '#334155';
-        });
-      }
-      
-      // حفظ الإعداد في التخزين المحلي
-      localStorage.setItem('quran-app-dark-mode', isDark ? 'true' : 'false');
-    }
-    
-    // حفظ إعدادات المستخدم
-    async function saveUserSettings() {
-      const settings = {
-        darkMode: document.getElementById('darkMode')?.checked ?? true,
-        fontSize: document.getElementById('fontSizeSelector')?.value ?? 'medium',
-        volume: document.getElementById('volumeSlider')?.value ?? 80,
-        autoPlay: document.getElementById('autoPlay')?.checked ?? false,
-        reciter: currentReciter || 'ar.alafasy'
-      };
-      
-      // حفظ الإعدادات في IndexedDB
-      try {
-        await saveToIndexedDB('settings', settings);
-        console.log('✅ تم حفظ إعدادات المستخدم');
-      } catch (error) {
-        console.error('❌ خطأ في حفظ إعدادات المستخدم:', error);
-        // محاولة استخدام localStorage كاحتياطي
-        try {
-          localStorage.setItem('quran-app-settings', JSON.stringify(settings));
-        } catch (localStorageError) {
-          console.error('❌ خطأ في حفظ إعدادات المستخدم في localStorage:', localStorageError);
-        }
-      }
-      
-      return settings;
-    }
-    
+  }
+
+  return settings;
+}
+
     // استعادة إعدادات المستخدم
     async function loadUserSettings() {
       let settings;
@@ -3743,99 +3769,38 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // إنشاء قائمة اختيار القارئ المضمنة
     // إنشاء واجهات API محلية لمعالجة أخطاء 404
-    (function setupMockAPIs() {
+   // داخل (function setupMockAPIs() { ... })();
+(function setupMockAPIs() {
   console.log('🔧 إعداد واجهات API محلية...');
   const originalFetch = window.fetch;
 
   window.fetch = function(url, options) {
-    const urlObj = typeof url === 'string' ? new URL(url, window.location.origin) : url;
-    const pathname = urlObj.pathname;
+    let urlToFetch = url; // استخدم متغيرًا جديدًا لتجنب تعديل url الأصلية بشكل غير متوقع
 
-    // -----------------------------------------------------------------------------
-    // || قم بتعليق أو إزالة هذا الجزء الخاص بتغيير المنفذ                          ||
-    // -----------------------------------------------------------------------------
-    /*
-    // تعديل المنفذ للخادم المحلي إذا كان الطلب موجهًا إلى المنفذ 3000
-    if (urlObj.hostname === '127.0.0.1' && urlObj.port === '3000') {
-      urlObj.port = '3002';
-      return originalFetch(urlObj, options); // تأكد من استخدام originalFetch هنا إذا أبقيت على هذا الجزء
-    }
-    */
-    // -----------------------------------------------------------------------------
-
-    // اعتراض طلبات API المحددة
-    if (pathname === '/api/health') {
-      console.log('🔄 استخدام واجهة API محلية: /api/health');
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve({
-          status: 'ok',
-          message: 'واجهة API محلية تعمل بنجاح'
-        })
-      });
-    }
-    // لا تعترض طلبات ملفات الأذكار هنا لأن athkar-main.js يتعامل معها مباشرة
-    /*
-    else if (pathname === '/api/proxy/athkar') { // إذا كنت تستخدم 'athkar' بدلاً من 'azkar'
-      console.log('🔄 استخدام واجهة API محلية: /api/proxy/athkar');
-      const urlParams = new URLSearchParams(urlObj.search);
-      const type = urlParams.get('type') || 'morning';
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve(getLocalAthkarData(type)) // افترض أن لديك دالة getLocalAthkarData
-      });
-    }
-    */
-
-    // استخدام fetch الأصلي لكل الطلبات الأخرى
-    return originalFetch(url, options);
-  };
-})();
-      // اعتراض طلبات fetch
-      window.fetch = function(url, options) {
-        // تحويل URL إلى كائن إذا كانت سلسلة نصية
-        const urlObj = typeof url === 'string' ? new URL(url, window.location.origin) : url;
+    if (typeof url === 'string') {
+        const urlObj = new URL(url, window.location.origin);
         const pathname = urlObj.pathname;
-        
-        // تعديل المنفذ للخادم المحلي إذا كان الطلب موجهًا إلى المنفذ 3000
-        if (urlObj.hostname === '127.0.0.1' && urlObj.port === '3000') {
-          urlObj.port = '3002';
-          return originalFetch(urlObj, options);
+
+        // تغيير المنفذ فقط لطلبات API المحددة التي تحتاج لذلك
+        if (urlObj.hostname === '127.0.0.1' && pathname.startsWith('/api/')) { // مثال: فقط طلبات /api/
+            // افترض أن خادم الواجهة الأمامية على 3000 والخادم الخلفي للـ API على 3002
+            if (window.location.port === '3000') { // تأكد أنك على خادم الواجهة الأمامية
+                 urlObj.port = '3002';
+                 urlToFetch = urlObj.toString();
+                 console.log(`🔄 توجيه طلب API ${pathname} إلى المنفذ 3002: ${urlToFetch}`);
+            }
         }
-        
-        // اعتراض طلبات API المحددة
-        if (pathname === '/api/health') {
+
+        // اعتراض طلبات API المحددة للـ Mock (إذا لم يتم توجيهها بالفعل)
+        if (pathname === '/api/health' && urlObj.port !== '3002') { // تحقق أنه ليس الطلب الموجه
           console.log('🔄 استخدام واجهة API محلية: /api/health');
-          return Promise.resolve({
-            ok: true,
-            status: 200,
-            json: () => Promise.resolve({
-              status: 'ok',
-              message: 'واجهة API محلية تعمل بنجاح'
-            })
-          });
-        } 
-        else if (pathname === '/api/proxy/athkar') {
-          console.log('🔄 استخدام واجهة API محلية: /api/proxy/athkar');
-          
-          // استخراج نوع الأذكار من الاستعلام
-          const urlParams = new URLSearchParams(urlObj.search);
-          const type = urlParams.get('type') || 'morning';
-          
-          // استخدام البيانات الاحتياطية للأذكار
-          return Promise.resolve({
-            ok: true,
-            status: 200,
-            json: () => Promise.resolve(getLocalathkarData(type))
-          });
+          return Promise.resolve({ /* ... mock response ... */ });
         }
-        
-        // استخدام fetch الأصلي لكل الطلبات الأخرى
-        return originalFetch(url, options);
-      };
-    })(); // إضافة القوسين هنا لاستدعاء الدالة فوراً
+    }
+    // استخدام fetch الأصلي
+    return originalFetch(urlToFetch, options);
+  };
+})()
      
     // إضافة وظيفة لعرض آية اليوم عند فتح الصفحة
     function showDailyVerse() {
