@@ -2924,6 +2924,104 @@ async function saveUserSettings() {
   return settings;
 }
 
+    // تطبيق إعدادات حجم الخط
+    function applyFontSizeSettings() {
+      const fontSizeSelector = document.getElementById('fontSizeSelector');
+      if (fontSizeSelector) {
+        applyFontSize(fontSizeSelector.value);
+      }
+    }
+    
+    // تطبيق حجم الخط المحدد
+    function applyFontSize(size) {
+      const quranFont = document.querySelectorAll('.font-quran');
+      const quranFontSm = document.querySelectorAll('.font-quran-sm');
+      
+      switch(size) {
+        case 'small':
+          quranFont.forEach(el => el.style.fontSize = 'clamp(1.5rem, 4vw, 1.9rem)');
+          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.1rem, 3.5vw, 1.4rem)');
+          break;
+        case 'medium':
+          quranFont.forEach(el => el.style.fontSize = 'clamp(1.7rem, 4.5vw, 2.1rem)');
+          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.3rem, 4vw, 1.6rem)');
+          break;
+        case 'large':
+          quranFont.forEach(el => el.style.fontSize = 'clamp(1.9rem, 5vw, 2.3rem)');
+          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.5rem, 4.5vw, 1.8rem)');
+          break;
+        case 'xlarge':
+          quranFont.forEach(el => el.style.fontSize = 'clamp(2.1rem, 5.5vw, 2.5rem)');
+          quranFontSm.forEach(el => el.style.fontSize = 'clamp(1.7rem, 5vw, 2rem)');
+          break;
+      }
+    }
+    
+    // تطبيق السمة (داكنة أو فاتحة)
+    function setTheme(isDark = true) {
+      const body = document.body;
+      
+      if (isDark) {
+        body.classList.add('dark-theme');
+        body.classList.remove('light-theme');
+        body.style.background = 'linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)';
+        body.style.color = '#cbd5e1';
+      } else {
+        body.classList.add('light-theme');
+        body.classList.remove('dark-theme');
+        body.style.background = 'linear-gradient(to bottom right, #f8fafc, #e2e8f0, #f8fafc)';
+        body.style.color = '#334155';
+        
+        // تحديث الألوان للعناصر الأخرى في السمة الفاتحة
+        document.querySelectorAll('.section-card, .floating-nav, .surah-card').forEach(el => {
+          el.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+          el.style.borderColor = 'rgba(203, 213, 225, 0.5)';
+        });
+        
+        document.querySelectorAll('.text-slate-400').forEach(el => {
+          el.style.color = '#64748b';
+        });
+        
+        document.querySelectorAll('.text-slate-300').forEach(el => {
+          el.style.color = '#475569';
+        });
+        
+        document.querySelectorAll('.text-slate-200').forEach(el => {
+          el.style.color = '#334155';
+        });
+      }
+      
+      // حفظ الإعداد في التخزين المحلي
+      localStorage.setItem('quran-app-dark-mode', isDark ? 'true' : 'false');
+    }
+    
+    // حفظ إعدادات المستخدم
+    async function saveUserSettings() {
+      const settings = {
+        darkMode: document.getElementById('darkMode')?.checked ?? true,
+        fontSize: document.getElementById('fontSizeSelector')?.value ?? 'medium',
+        volume: document.getElementById('volumeSlider')?.value ?? 80,
+        autoPlay: document.getElementById('autoPlay')?.checked ?? false,
+        reciter: currentReciter || 'ar.alafasy'
+      };
+      
+      // حفظ الإعدادات في IndexedDB
+      try {
+        await saveToIndexedDB('settings', settings);
+        console.log('✅ تم حفظ إعدادات المستخدم');
+      } catch (error) {
+        console.error('❌ خطأ في حفظ إعدادات المستخدم:', error);
+        // محاولة استخدام localStorage كاحتياطي
+        try {
+          localStorage.setItem('quran-app-settings', JSON.stringify(settings));
+        } catch (localStorageError) {
+          console.error('❌ خطأ في حفظ إعدادات المستخدم في localStorage:', localStorageError);
+        }
+      }
+      
+      return settings;
+    }
+    
     // استعادة إعدادات المستخدم
     async function loadUserSettings() {
       let settings;
