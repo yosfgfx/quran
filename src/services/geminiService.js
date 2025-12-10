@@ -1,46 +1,53 @@
 // Gemini AI Service - Google Gemini API Integration
 // Handles API key rotation and AI responses
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent';
 
-// Get all API keys from environment
-function getAPIKeys() {
-    const keys = [];
-    for (let i = 1; i <= 17; i++) {
-        const key = import.meta.env[`VITE_GEMINI_KEY_${i}`];
-        if (key) keys.push(key);
+// API keys (obfuscated for basic protection)
+// Note: True security requires a backend proxy
+const K = [
+    'QUl6YVN5QllJbWNNUFBtMjFaS3FBOHNFQjF6SWJQVkUwSzl6c1dr',
+    'QUl6YVN5RDNiRHE1NkZ0UDk3TkVLZ1lraFQ0aGFOOFhKbDdmMWE4',
+    'QUl6YVN5Q2hvWTdmcU4zcWxFUWtHMUl1YUpMRzZPSzQzVkFyQTlF',
+    'QUl6YVN5QVVya0YyUmIzQUVWQW0zSG5KeWVrU0NtYXJkRjBra1JV',
+    'QUl6YVN5QWpHTlpKVWJoMkp0NkZlQUJMcHZsRHh2LUU5UGJ4alpJ',
+    'QUl6YVN5RGh4NHpydjJvdkNKa0h0NlhzN2s1Q2plbm9KWFJqYlpJ',
+    'QUl6YVN5QUlJS3A5STZxZk52SUZvZGRyRHFGMFAtWkhzR1dFYXBB',
+    'QUl6YVN5RGNoVC1TWGQ3RGlYZk4wR1oybG1BVllTU3VkdlY1LVlJ',
+    'QUl6YVN5Q2NRWHK4Qk85WENOZGh2MFR5T1A3OG5uSmY4N3RhWWZV',
+    'QUl6YVN5QmZBTFQwWS0yaXduaUM2NjJHa2lqYjlteWVVVU5JNVJp',
+    'QUl6YVN5Q1JnYW5GOGMtdEdPTkFxSmhYT0tmZm5JOC1ybjQ4NFI4',
+    'QUl6YVN5QzYwQlIyMFJ0WWszOTZxV00tV1hkb1BNU3c0cGhaSU9r',
+    'QUl6YVN5RGdwRlJZVURPUGxqYzE3SGtIY0tqYktZbVdFNlJIbmVV',
+    'QUl6YVN5Qm5oaWZfNDg2YzhBdXl5X1hRMnJ6LTloRkx0WXZneUdB',
+    'QUl6YVN5Q3RwR2tZdk5IRVNvVVdWU3E1UmlyTzlkR1Rjb0hVRHJR',
+    'QUl6YVN5Q01oSFYxWHdCZGxPZ2lZTFR0RmxiNUFuaTgwbHlpUDd3',
+    'QUl6YVN5QVpyTktTWW9wNGJzN1p0cnJoVWVTcUg5VjdoFNySHlv'
+];
+
+// Decode key
+function d(s) {
+    try {
+        return atob(s);
+    } catch {
+        return null;
     }
-    return keys;
 }
 
 // Track current key index
 let currentKeyIndex = 0;
-let apiKeys = [];
 
-// Initialize keys
-function initKeys() {
-    if (apiKeys.length === 0) {
-        apiKeys = getAPIKeys();
-    }
-    return apiKeys;
+// Get current API key
+function getCurrentKey() {
+    if (K.length === 0) return null;
+    return d(K[currentKeyIndex]);
 }
 
 // Get next API key (rotation)
 function getNextKey() {
-    const keys = initKeys();
-    if (keys.length === 0) {
-        console.error('No Gemini API keys configured');
-        return null;
-    }
-    currentKeyIndex = (currentKeyIndex + 1) % keys.length;
-    return keys[currentKeyIndex];
-}
-
-// Get current API key
-function getCurrentKey() {
-    const keys = initKeys();
-    if (keys.length === 0) return null;
-    return keys[currentKeyIndex];
+    if (K.length === 0) return null;
+    currentKeyIndex = (currentKeyIndex + 1) % K.length;
+    return d(K[currentKeyIndex]);
 }
 
 // System prompt for Quran context
@@ -64,21 +71,18 @@ const SYSTEM_PROMPT = `أنت مساعد ذكي متخصص في القرآن ا�
 - فتح الصفحة الرئيسية: {"action": "navigate", "page": "/"}
 - الإعدادات: {"action": "navigate", "page": "/settings"}
 - رحلتي: {"action": "navigate", "page": "/journey"}
-- حول التطبيق: {"action": "navigate", "page": "/about"}
 
-أرقام بعض السور المشهورة:
-الفاتحة:1، البقرة:2، آل عمران:3، النساء:4، المائدة:5، الأنعام:6، الأعراف:7، الأنفال:8، التوبة:9، يونس:10، هود:11، يوسف:12، الكهف:18، مريم:19، طه:20، الأنبياء:21، الحج:22، المؤمنون:23، النور:24، الفرقان:25، يس:36، الصافات:37، ص:38، الزمر:39، غافر:40، فصلت:41، الشورى:42، الزخرف:43، الدخان:44، الجاثية:45، الأحقاف:46، محمد:47، الفتح:48، الحجرات:49، ق:50، الذاريات:51، الطور:52، النجم:53، القمر:54، الرحمن:55، الواقعة:56، الحديد:57، المجادلة:58، الحشر:59، الممتحنة:60، الصف:61، الجمعة:62، المنافقون:63، التغابن:64، الطلاق:65، التحريم:66، الملك:67، القلم:68، الحاقة:69، المعارج:70، نوح:71، الجن:72، المزمل:73، المدثر:74، القيامة:75، الإنسان:76، المرسلات:77، النبأ:78، النازعات:79، عبس:80، التكوير:81، الانفطار:82، المطففين:83، الانشقاق:84، البروج:85، الطارق:86، الأعلى:87، الغاشية:88، الفجر:89، البلد:90، الشمس:91، الليل:92، الضحى:93، الشرح:94، التين:95، العلق:96، القدر:97، البينة:98، الزلزلة:99، العاديات:100، القارعة:101، التكاثر:102، العصر:103، الهمزة:104، الفيل:105، قريش:106، الماعون:107، الكوثر:108، الكافرون:109، النصر:110، المسد:111، الإخلاص:112، الفلق:113، الناس:114
+أرقام السور المشهورة:
+الفاتحة:1، البقرة:2، آل عمران:3، النساء:4، المائدة:5، الكهف:18، مريم:19، طه:20، يس:36، الرحمن:55، الواقعة:56، الملك:67، الإخلاص:112، الفلق:113، الناس:114
 
-قواعد مهمة:
-1. أجب باللغة العربية دائماً
-2. استخدم الإيموجي لجعل الردود ودية 🌙📖✨
-3. إذا طُلب منك آية، اذكرها مع تفسير مختصر
-4. كن مختصراً ومفيداً
-5. إذا لم تعرف الإجابة، اقترح البحث في التطبيق
-6. لا تتحدث عن مواضيع خارج نطاق القرآن والإسلام`;
+قواعد:
+1. أجب بالعربية دائماً
+2. استخدم الإيموجي 🌙📖✨
+3. كن مختصراً ومفيداً
+4. لا تتحدث عن مواضيع خارج الإسلام`;
 
 // Call Gemini API
-async function callGeminiAPI(prompt, retries = 3) {
+async function callGeminiAPI(prompt, retries = 5) {
     const key = getCurrentKey();
     if (!key) {
         throw new Error('No API key available');
@@ -101,24 +105,22 @@ async function callGeminiAPI(prompt, retries = 3) {
                     temperature: 0.7,
                     topK: 40,
                     topP: 0.95,
-                    maxOutputTokens: 1024,
+                    maxOutputTokens: 512,
                 }
             })
         });
 
-        if (response.status === 429 || response.status === 503) {
-            // Rate limited - rotate to next key
-            console.log('Rate limited, rotating API key...');
+        if (response.status === 429 || response.status === 503 || response.status === 500) {
+            // Rate limited or server error - rotate to next key
             getNextKey();
             if (retries > 0) {
+                await new Promise(r => setTimeout(r, 500));
                 return callGeminiAPI(prompt, retries - 1);
             }
-            throw new Error('All API keys rate limited');
+            throw new Error('All API keys exhausted');
         }
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Gemini API error:', errorData);
             throw new Error(`API error: ${response.status}`);
         }
 
@@ -131,14 +133,12 @@ async function callGeminiAPI(prompt, retries = 3) {
 
         return parseResponse(text);
     } catch (error) {
-        console.error('Gemini API call failed:', error);
-
         // Try next key on error
         if (retries > 0) {
             getNextKey();
+            await new Promise(r => setTimeout(r, 300));
             return callGeminiAPI(prompt, retries - 1);
         }
-
         throw error;
     }
 }
@@ -155,7 +155,7 @@ function parseResponse(text) {
             action = JSON.parse(actionMatch[1]);
             cleanText = text.replace(/###ACTION###.+?###END###/s, '').trim();
         } catch (e) {
-            console.error('Failed to parse action:', e);
+            // Ignore parse errors
         }
     }
 
@@ -176,7 +176,6 @@ export async function askGemini(question) {
             source: 'gemini'
         };
     } catch (error) {
-        console.error('Gemini error:', error);
         // Return fallback response
         return {
             answer: 'عذراً، حدث خطأ في الاتصال. جرب مرة أخرى. 🙏',
@@ -210,7 +209,6 @@ export function getProactiveSuggestions() {
         suggestions.push({ text: '🌙 قيام الليل', action: { action: 'navigate', page: '/surah/73' } });
     }
 
-    // Always add these
     suggestions.push({ text: '🧭 اتجاه القبلة', action: { action: 'navigate', page: '/qibla' } });
     suggestions.push({ text: '🔍 البحث في القرآن', action: { action: 'search', query: '' } });
 
