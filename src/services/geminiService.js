@@ -3,51 +3,39 @@
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
-// API keys (obfuscated for basic protection)
-// Note: True security requires a backend proxy
-const K = [
-    'QUl6YVN5QllJbWNNUFBtMjFaS3FBOHNFQjF6SWJQVkUwSzl6c1dr',
-    'QUl6YVN5RDNiRHE1NkZ0UDk3TkVLZ1lraFQ0aGFOOFhKbDdmMWE4',
-    'QUl6YVN5Q2hvWTdmcU4zcWxFUWtHMUl1YUpMRzZPSzQzVkFyQTlF',
-    'QUl6YVN5QVVya0YyUmIzQUVWQW0zSG5KeWVrU0NtYXJkRjBra1JV',
-    'QUl6YVN5QWpHTlpKVWJoMkp0NkZlQUJMcHZsRHh2LUU5UGJ4alpJ',
-    'QUl6YVN5RGh4NHpydjJvdkNKa0h0NlhzN2s1Q2plbm9KWFJqYlpJ',
-    'QUl6YVN5QUlJS3A5STZxZk52SUZvZGRyRHFGMFAtWkhzR1dFYXBB',
-    'QUl6YVN5RGNoVC1TWGQ3RGlYZk4wR1oybG1BVllTU3VkdlY1LVlJ',
-    'QUl6YVN5Q2NRWHK4Qk85WENOZGh2MFR5T1A3OG5uSmY4N3RhWWZV',
-    'QUl6YVN5QmZBTFQwWS0yaXduaUM2NjJHa2lqYjlteWVVVU5JNVJp',
-    'QUl6YVN5Q1JnYW5GOGMtdEdPTkFxSmhYT0tmZm5JOC1ybjQ4NFI4',
-    'QUl6YVN5QzYwQlIyMFJ0WWszOTZxV00tV1hkb1BNU3c0cGhaSU9r',
-    'QUl6YVN5RGdwRlJZVURPUGxqYzE3SGtIY0tqYktZbVdFNlJIbmVV',
-    'QUl6YVN5Qm5oaWZfNDg2YzhBdXl5X1hRMnJ6LTloRkx0WXZneUdB',
-    'QUl6YVN5Q3RwR2tZdk5IRVNvVVdWU3E1UmlyTzlkR1Rjb0hVRHJR',
-    'QUl6YVN5Q01oSFYxWHdCZGxPZ2lZTFR0RmxiNUFuaTgwbHlpUDd3',
-    'QUl6YVN5QVpyTktTWW9wNGJzN1p0cnJoVWVTcUg5VjdoFNySHlv'
+// API keys - direct (for now, will be secured via Netlify Functions later)
+const API_KEYS = [
+    'AIzaSyBYImcMPpm21ZKqA8sEB1zIbPVE0K9zsWk',
+    'AIzaSyD3bDq56FtP97NEKgYkhT4haN8XJl7f1a8',
+    'AIzaSyChoY7fqN3qlEQkG1IuaJLG6OK43VArA9E',
+    'AIzaSyAUrkF2Rb3AEVAm3HnJyekSCmardF0kkRU',
+    'AIzaSyAjGNZJUbh2Jt6FeABLpvlDxv-E9PbxjZI',
+    'AIzaSyDhx4zrv2ovCJkHt6Xzzk5CjenoJXRjbIs',
+    'AIzaSyAIIKp9I6qfNvIFoddrDqF0P-ZHsGWEapA',
+    'AIzaSyDchT-SXd7DiXfN0GZ2lmAVYSSudvV5-YI',
+    'AIzaSyCcQXy8BO9XCNdhv0TyOP78nnJf87taYfU',
+    'AIzaSyBfALT0Y-2iwniC662Gkijb9myeUUNI5RI',
+    'AIzaSyCRganF8c7_tGONAqJhXOKfnI8-rn484cY',
+    'AIzaSyC60BR20RtYk396qWM-WXdoPMSw4phZIOk',
+    'AIzaSyDgpFRYUDOPljc17HkHcKjbKYmWE6RHneU',
+    'AIzaSyBnhif_486c8Auyy_XQ2rz-9hFLtYvgyGA',
+    'AIzaSyCtpGkYvNHESoUWVSq5RirO9dGTcoHUDrQ',
+    'AIzaSyCMhHV1XwBdlOgiYLTtFlb5Ani80lyiP7w',
+    'AIzaSyAZrNKSYop4bs7ZtrrhUeSqH9V7vHSrHyo'
 ];
-
-// Decode key
-function d(s) {
-    try {
-        return atob(s);
-    } catch {
-        return null;
-    }
-}
 
 // Track current key index
 let currentKeyIndex = 0;
 
 // Get current API key
 function getCurrentKey() {
-    if (K.length === 0) return null;
-    return d(K[currentKeyIndex]);
+    return API_KEYS[currentKeyIndex];
 }
 
 // Get next API key (rotation)
 function getNextKey() {
-    if (K.length === 0) return null;
-    currentKeyIndex = (currentKeyIndex + 1) % K.length;
-    return d(K[currentKeyIndex]);
+    currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+    return API_KEYS[currentKeyIndex];
 }
 
 // System prompt for Quran context
@@ -121,6 +109,13 @@ async function callGeminiAPI(prompt, retries = 5) {
         }
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error:', response.status, errorText);
+            getNextKey();
+            if (retries > 0) {
+                await new Promise(r => setTimeout(r, 300));
+                return callGeminiAPI(prompt, retries - 1);
+            }
             throw new Error(`API error: ${response.status}`);
         }
 
