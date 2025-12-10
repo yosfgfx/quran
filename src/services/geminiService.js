@@ -1,7 +1,7 @@
 // Gemini AI Service - Google Gemini API Integration
 // Handles API key rotation and AI responses
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
 // API keys (obfuscated for basic protection)
 // Note: True security requires a backend proxy
